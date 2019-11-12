@@ -27,7 +27,7 @@ source ./Top/wms_clnt_TT.tcl
 source ./Top/wms_clnt_Swms.tcl
 source ./Top/wms_clnt_Adam.tcl
 
-  wm title . "WMS_Move"
+  wm title . "WMS_LMZ"
   wm geometry . "=+250+150"
   wm protocol . WM_DELETE_WINDOW ExitPr
   focus -force .
