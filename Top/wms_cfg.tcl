@@ -122,8 +122,6 @@ foreach name {S01 S02} {
 
   set wms($name,adrDev) $adrDev
 
-#  set wms($name,colorlist) $wms(colorlist)
-
   set wms($name,swms,lamda) {}
   set wms($name,adr,moxa)  "192.168.0.123"
   set wms($name,port,swms) "4003"
