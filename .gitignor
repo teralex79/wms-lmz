@@ -1,0 +1,3 @@
+./Data/**/*.txt
+./Data/**/*.dat
+*.ini
