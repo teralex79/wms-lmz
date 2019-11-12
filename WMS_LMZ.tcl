@@ -4,7 +4,6 @@ exec wish "$0" "$@"
 
 ## Ispol'zuemie paketi
 
-package require BWidget
 if {[catch {package require -exact Iwidgets 4.0.2}]} {
 
   tk_messageBox -message "Для работы программы необходимо установить Iwidgets 4.0.2" -title "Error" -type ok -icon error
