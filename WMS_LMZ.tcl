@@ -38,9 +38,6 @@ source ./Top/wms_clnt_Adam.tcl
   focus -force .
   bind . <F10> "ExitPr"
 
-  set wms(active) 0
-#  if {[info hostname]=="wmsn"} {set wms(sm) 1}
-
 menu .menu -tearoff 0
 
 set m .menu.file

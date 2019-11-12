@@ -3,18 +3,19 @@ if {$wms(console)} {
   console show
 }
 
-#set wms(colorlist) {ir ir2 red yel grn blu bl2 uv1 uv2 uv3}
+set wms(active) 0
+set wms(temp) 0
+set wms(zndjntctr) 0
+
 set wms(zond) {}
 
 set wms(port) {}
-#set wms(portname) {}
-#set wms(nwms,ready) 1
 set wms(startmeas) 0
 
 set wms(calculate) 0
+
 # DB connect variables
 set wms(connect) 0
-#set wms(connectdb) 0
 set wms(maxid) 0
 
 set wms(lamda,old,blu) 420000
@@ -31,16 +32,12 @@ set wms(EPSI)  5
 
 set wms(STATUS)  {514 0 0 0 0 0}
 
-#set wms(WMSPATH)  "W:/DATA"
 set wms(COMPATH)  "./"
 set wms(DATAPATH)  "./Data"
 set wms(CURPATH)  "./"
 
 set wms(GRAPH) 1
 set wms(PRESET_W) 1
-
-set wms(temp) 0
-set wms(zndjntctr) 0
 
 set wms(com) {}
 set wms(mnlist) {}
@@ -125,9 +122,9 @@ foreach name {S01 S02} {
 
   set wms($name,adrDev) $adrDev
 
-#	set wms($name,colorlist) $wms(colorlist)
+#  set wms($name,colorlist) $wms(colorlist)
 
-	set wms($name,swms,lamda) {}
+  set wms($name,swms,lamda) {}
   set wms($name,adr,moxa)  "192.168.0.123"
   set wms($name,port,swms) "4003"
   set wms($name,port,adam) "4004"
