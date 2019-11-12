@@ -1,0 +1,84 @@
+[Config]
+Compilator.SaveAll=0
+Compilator.Capture=0
+Compilator.CompileOnBackground=0
+Compilator.ProgSaveAll=0
+Compilator.ProgRunSelection=0
+Compilator.LogType=0
+DefaultDir=V:\Terentjev\Work\WMS_New\WMS_Zond\WMS_LMZ
+DefaultCP=0
+LogtoEnd=1
+DontOpen=0
+AbsolutePath=0
+FileFormat=0
+ProjectFilesOnly=0
+HTServer=localhost
+Extensions=*.*
+[Project tree]
+WMS_LMZ
+	+WMS_LMZ
+		-Data
+			-Config
+				-S01
+					Data\Config\S01\Coef_swms_S01.DAT
+					Data\Config\S01\RWV_01.DAT
+				-S02
+					Data\Config\S02\RWV_02.DAT
+				Data\Config\K2.txt
+		+Top
+			Top\K2.txt
+			Top\wms_Add_Point.tcl
+			Top\wms_calc_disp.tcl
+			Top\wms_cfg.tcl
+			Top\wms_clnt_Adam.tcl
+			Top\wms_clnt_Swms.tcl
+			Top\wms_clnt_TT.tcl
+			Top\wms_FF.tcl
+			Top\wms_FF_Swms.tcl
+			Top\wms_meas.tcl
+			Top\wms_proc.tcl
+			Top\wms_RF.tcl
+		+TT
+			TT\tt_canals.def
+			TT\wms_temp_define.tcl
+			TT\wms_temp_driver.tcl
+			TT\wms_temp_maketask.tcl
+			TT\wms_temp_serv.tcl
+		WMS_LMZ.tcl
+		WMS_TT.tcl
+[Open project files]
+0=WMS_LMZ.tcl
+1=Top\wms_proc.tcl
+2=Top\wms_meas.tcl
+3=Top\wms_FF_Swms.tcl
+4=Top\wms_clnt_Swms.tcl
+5=Top\wms_clnt_TT.tcl
+6=Top\wms_clnt_Adam.tcl
+7=Top\wms_cfg.tcl
+[Selected Project Files]
+Main=
+Selected=Top\wms_proc.tcl
+[WMS_LMZ.tcl]
+TopLine=1
+Caret=1,1
+[Top\wms_proc.tcl]
+TopLine=1
+Caret=1,1
+[Top\wms_meas.tcl]
+TopLine=148
+Caret=1,176
+[Top\wms_FF_Swms.tcl]
+TopLine=1
+Caret=1,1
+[Top\wms_clnt_Swms.tcl]
+TopLine=1
+Caret=1,1
+[Top\wms_clnt_TT.tcl]
+TopLine=1
+Caret=1,1
+[Top\wms_clnt_Adam.tcl]
+TopLine=1
+Caret=1,1
+[Top\wms_cfg.tcl]
+TopLine=1
+Caret=19,1
