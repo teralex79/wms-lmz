@@ -47,14 +47,14 @@ WMS_LMZ
 		WMS_LMZ.tcl
 		WMS_TT.tcl
 [Open project files]
-0=Новый1.txt
-1=WMS_LMZ.tcl
+0=WMS_LMZ.tcl
+1=Top\wms_proc.tcl
 [Selected Project Files]
 Main=
-Selected=WMS_LMZ.tcl
-[Новый1.txt]
-TopLine=1
-Caret=1,1
+Selected=Top\wms_proc.tcl
 [WMS_LMZ.tcl]
-TopLine=57
+TopLine=127
+Caret=1,1
+[Top\wms_proc.tcl]
+TopLine=1
 Caret=1,1
