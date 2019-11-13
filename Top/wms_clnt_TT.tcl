@@ -16,33 +16,39 @@ proc runtt {adr} {
 global wms
 
 # establish communication with sm program
-  if {[catch {set s [socket localhost 4442]}] } {
-    if {[catch {set s [socket $adr 4442]}]} {
-      if {$wms(runtt)} {
-        set answ [tk_messageBox -message "Error $adr TT 4442\n Запустить TruTemp?" -title "Error $adr" -type yesno -icon error]
-        if {$answ=="yes"} {
-          exec -- wish "./WMS_TT.tcl" &
-          after 200 "runtt localhost"
-        } else {
-          set wms(temp) 0
-        }
-      } else {
-        incr wms(runtt)
-        exec -- wish "./WMS_TT.tcl" &
-        after 200 {runtt localhost}
+  set flag 0
+  set lst {}
+  foreach adr_item [concat $adr $wms(tt_adr_list)] {
+    if {[lsearch $lst $adr_item]==-1} {
+      lappend lst $adr_item
+      set wms(Info) "Connecting to TT $adr_item"
+      update
+      if {![catch {set s [socket $adr_item 4442]}]} {
+        set flag 1
+        set wms(Info) "Connected TT to $adr_item"
+        update
+        break
       }
-    } else {
-      set wms(socket,tt) $s
-      fconfigure $s -buffering line
-      fileevent $s readable [list handleSocketTT $s]
-      SendSocketTT ConTT 0 0 0 0
     }
-  } else {
+  }
+
+  if {$flag} {
     set wms(socket,tt) $s
     fconfigure $s -buffering line
     fileevent $s readable [list handleSocketTT $s]
     SendSocketTT ConTT 0 0 0 0
-  }  
+    after 1000 {set wms(Info) ""}
+  } else {
+    set answ [tk_messageBox -message "Error $adr TT 4442\n Запустить TruTemp?" -title "Error $adr" -type yesno -icon error]
+    if {$answ=="yes"} {
+      exec -- wish "./WMS_TT.tcl" &
+      after 200 "runtt localhost"
+    } else {
+      set wms(temp) 0
+      SaveProp
+      after 1000 {set wms(Info) ""}
+    }
+  }
 }
 
 # Прием командного отклика от TrueTemp сервера

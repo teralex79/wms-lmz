@@ -118,8 +118,10 @@ pack .fr2 -side bottom -anchor w
 
   set dt [frame $dat.dt]
   set clck [frame $dat.clck]
+  set inf [frame $dat.inf]
   grid $dt -row 0 -column 0 -sticky news
   grid $clck -row 0 -column 1 -sticky news
+  grid $inf -row 0 -column 2 -sticky news
 
 ## Sozdanie polja dati
 
@@ -132,6 +134,12 @@ pack .fr2 -side bottom -anchor w
   label $clck.clckn -width 7 -text "Время:"
   label $clck.clck -width 7 -textvariable wms(clck)
   pack $clck.clckn $clck.clck -side left
+
+## Sozdanie polja info
+
+  label $inf.infn -width 7 -text "Info:"
+  label $inf.inf -width 30 -textvariable wms(Info)
+  pack $inf.infn $inf.inf -side left
 
 # Zapusk procedur obnovlenija dati i vremeni
 
