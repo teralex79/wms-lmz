@@ -77,6 +77,7 @@ global wms meas
   puts $of "wms(zndjntctr) $wms(zndjntctr)"
   puts $of "wms(temp) $wms(temp)"
   puts $of "wms(sm) $wms(sm)"
+  puts $of "wms(adr_tt) $wms(adr_tt)"
 
   foreach name {S01 S02} {
 

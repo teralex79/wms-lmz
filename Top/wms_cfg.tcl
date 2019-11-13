@@ -3,7 +3,7 @@ if {$wms(console)} {
   console show
 }
 
-set wms(active) 0
+set wms(active) 1
 set wms(temp) 0
 set wms(zndjntctr) 0
 
@@ -117,6 +117,16 @@ set wms(tempaver) 1
 set cnt 0
 
 set adrDev 1
+
+set hn [info hostname]
+if {$hn == "td16003"} {
+  set wms(adr_tt) "192.168.0.101"
+} elseif {$hn == "td15003"} {
+  set wms(adr_tt) "192.168.0.102"
+} else {
+  set wms(adr_tt) "localhost"
+}
+
 
 foreach name {S01 S02} {
 
