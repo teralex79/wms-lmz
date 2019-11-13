@@ -70,7 +70,7 @@ global ent rs wms
         flush $rs($name,adam)
         if {!$wms(adam,ready)} {vwait wms(adam,ready)}
       }
-      after 500 "CheckZond $name $adr 1 "
+      after 1000 "CheckZond $name $adr 1 "
     } else {
 
        set wms($name,done) 1
@@ -114,7 +114,7 @@ global rs wms val ent
   } else {
     if {$rep<3} {
 
-      after [expr {$rep*1000}]
+      after [expr {($rep + 1)*1500}]
       incr rep
       after 100
       CheckZond $name ${adr} $rep

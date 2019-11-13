@@ -4,3 +4,6 @@
 *.ini
 *.BAK
 *.bak
+*.ppr
+*.lnk
+*.Log

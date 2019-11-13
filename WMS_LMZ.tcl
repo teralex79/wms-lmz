@@ -4,6 +4,11 @@ exec wish "$0" "$@"
 
 ## Ispol'zuemie paketi
 
+if {[catch {package require -exact Iwidgets 4.0.2}]} {
+
+  tk_messageBox -message "Для работы программы необходимо установить Iwidgets 4.0.2" -title "Error" -type ok -icon error
+  exit
+}
 package require BWidget
 package require BLT
   namespace import blt::*
@@ -27,14 +32,11 @@ source ./Top/wms_clnt_TT.tcl
 source ./Top/wms_clnt_Swms.tcl
 source ./Top/wms_clnt_Adam.tcl
 
-  wm title . "WMS_Move"
+  wm title . "WMS_LMZ"
   wm geometry . "=+250+150"
   wm protocol . WM_DELETE_WINDOW ExitPr
   focus -force .
   bind . <F10> "ExitPr"
-
-  set wms(active) 1
-#  if {[info hostname]=="wmsn"} {set wms(sm) 1}
 
 menu .menu -tearoff 0
 

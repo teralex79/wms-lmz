@@ -206,7 +206,7 @@ global wms meas
             set cnt4 0
             foreach clr $wms($nm,colorlist) {
               if {$item=="coef"} {
-                button $fr.[string tolower $clr] -text "Коэффициенты" -width $wdth($nm)
+                button $fr.[string tolower $clr] -text "Коэффициенты" -width $wdth($nm) -command "EditCoefSWMS $nm"
                 grid   $fr.[string tolower $clr] -row $cnt3 -column $cnt4  -sticky news
               } else {
                 label $fr.[string tolower $clr] -textvariable wms($nm,$item,$clr) -width $wdth1($nm) -justify right -relief ridge
@@ -657,7 +657,7 @@ global wms rs meas
     set swms [labelframe $wmsn.fr${name} -text "SWMS_$name"]
     grid $swms -row $rw -column $cl -sticky news
     incr cl
-    button $swms.bt1 -text "Коэффициенты"
+    button $swms.bt1 -text "Коэффициенты" -command "EditCoefSWMS $name"
     grid  $swms.bt1 -row 0 -column 0  -sticky news
   }
 
