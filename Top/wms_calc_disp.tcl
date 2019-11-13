@@ -3,7 +3,7 @@
 ### Так же графический интерфейс и доп. процедуры для возможности постобработки, путем выбора файла или папки с файлами с измеренными данными.
 ### Для запуска режима постобработки файл запускается с аргументом, напр. "1"
 
-if {$argc>0} {
+if {$argc>0 || ([info exists ::argv0] && $::argv0 eq [info script])} {
   set wms(top) 1
   set wms(unimod) 1
   console show
@@ -24,7 +24,7 @@ if {$wms(top)} {
 
   wm geometry . "=+300+150"
 
-  foreach name {S01 S04 S05 S07} {
+  foreach name {S01 S02 S04 S05 S07} {
     set wms($name,l,uv) 250000
     set wms($name,l,ir) 930000
     set wms($name,npoints) 100
@@ -34,26 +34,31 @@ if {$wms(top)} {
   }
 
   set wms(S01,RWI) 589
+  set wms(S02,RWI) 589
   set wms(S04,RWI) 739.4
   set wms(S05,RWI) 702.5
   set wms(S07,RWI) 700.5
 
   set wms(S01,RTI) 568
+  set wms(S02,RTI) 568
   set wms(S04,RTI) 705
   set wms(S05,RTI) 669
   set wms(S07,RTI) 669
 
   set wms(S01,RC) 364
+  set wms(S02,RC) 364
   set wms(S04,RC) 455
   set wms(S05,RC) 617
   set wms(S07,RC) 617
 
   set wms(S01,RH) 271
+  set wms(S02,RH) 271
   set wms(S04,RH) 273
   set wms(S05,RH) 270
   set wms(S07,RH) 270
 
   set wms(S01,ALFAI) -5
+  set wms(S02,ALFAI) -5
   set wms(S04,ALFAI) -39
   set wms(S05,ALFAI) -28
   set wms(S07,ALFAI) -45
@@ -150,7 +155,7 @@ global calc wms
     set wms($name,type) [lindex [split [lindex $path end] "_."] 1]
 
     set cnt 0
-    foreach nm {S01 S04 S05 S07} {
+    foreach nm {S01 S02 S04 S05 S07} {
       if {$nm==$name} {incr cnt}
     }
     foreach type {swms nwms test txt} {
@@ -159,7 +164,7 @@ global calc wms
     if {$cnt==2} {
       set of [open [info hostname]_unimod.ini w]
       puts $of "calc(initialdir) $path2"
-      foreach nm {S01 S04 S05 S07} {
+      foreach nm {S01 S02 S04 S05 S07} {
         puts $of "wms($nm,l,uv)    $wms($nm,l,uv)   "
         puts $of "wms($nm,l,ir)    $wms($nm,l,ir)   "
         puts $of "wms($nm,npoints) $wms($nm,npoints)"
@@ -282,7 +287,7 @@ global calc
 proc ChooseRange {name} {
 global calc wms
 
-  foreach nm {S01 S04 S05 S07} {
+  foreach nm {S01 S02 S04 S05 S07} {
     catch {destroy .grph$nm}
   }
 
@@ -433,7 +438,7 @@ global calc wms
       global a
       set off [open [info hostname]_unimod.ini w]
       puts $off "calc(initialdir) $calc(initialdir)"
-      foreach name {S01 S04 S05 S07} {
+      foreach name {S01 S02 S04 S05 S07} {
         puts $off "wms($name,l,uv)    $wms($name,l,uv)   "
         puts $off "wms($name,l,ir)    $wms($name,l,ir)   "
         puts $off "wms($name,npoints) $wms($name,npoints)"
