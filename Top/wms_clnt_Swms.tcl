@@ -77,22 +77,6 @@ global wms
   }
 }
 
-
-proc SendCmdCOM {a cmd name} {
-global wms
-
-  set wms($name,socket,status) 1
-  set wms($name,string) ""
-  set wms($name,cmd) $cmd
-  if {$cmd=="aA" || $cmd=="bB" || $cmd=="v"} {
-    puts -nonewline $wms($name,socket,swms) $cmd
-  } else {
-    puts $wms($name,socket,swms) $cmd
-  }
-  flush $wms($name,socket,swms)
-  if {$wms($name,socket,status)} {vwait wms($name,socket,status)}
-}
-
 proc Init_SWMS {name} {
 global wms
 
