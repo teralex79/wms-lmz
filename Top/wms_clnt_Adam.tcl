@@ -60,16 +60,19 @@ global ent rs wms
       if {$i} {
 
         set wms(adam,ready) 0
-        puts $rs($name,adam) \@${adr}DO00
-        flush $rs($name,adam)
+#        puts $rs($name,adam) \@${adr}DO00
+#        flush $rs($name,adam)
+        SendCommandAdam $name act "\@${adr}DO00"
         if {!$wms(adam,ready)} {vwait wms(adam,ready)}
       } else {
 
         set wms(adam,ready) 0
-        puts $rs($name,adam) \@${adr}DO01
-        flush $rs($name,adam)
+#        puts $rs($name,adam) \@${adr}DO01
+#        flush $rs($name,adam)
+        SendCommandAdam $name act "\@${adr}DO01"
         if {!$wms(adam,ready)} {vwait wms(adam,ready)}
       }
+puts "ZondContrAdam"
       after 1000 "CheckZond $name $adr 1 "
     } else {
 
@@ -83,9 +86,11 @@ global ent rs wms
 proc CheckZond {name adr rep} {
 global rs wms val ent
 
+puts "CheckZond"
   set wms(adam,ready) 0
-  puts $rs($name,adam) "\@${adr}DI"
-  flush $rs($name,adam)
+#  puts $rs($name,adam) "\@${adr}DI"
+#  flush $rs($name,adam)
+  SendCommandAdam $name check "\@${adr}DI"
   if {!$wms(adam,ready)} {vwait wms(adam,ready)}
   set pos [string range $ent(11) end-2 end-2]
 
@@ -128,6 +133,24 @@ global rs wms val ent
         set wms($name,done) 1
       }
     }
+  }
+}
+
+proc SendCommandAdam {name act cmd} {
+global rs wms ent
+
+  if {$wms(active)} {
+    puts $rs($name,adam) $cmd
+    flush $rs($name,adam)
+  } else {
+    if {$act == "check"} {
+      if {$wms($name,state,next) == "Свести"} {
+        set ent(11) "001"
+      } else {
+        set ent(11) "101"
+      }
+    }
+    after 100 "set wms(adam,ready) 1"
   }
 }
 
