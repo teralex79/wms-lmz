@@ -77,44 +77,6 @@ global wms
   }
 }
 
-proc Init_SWMS {name} {
-global wms
-
-  if {$name=="all"} {
-    foreach name $wms(zond) {
-      if {$wms($name,type)=="swms"} {
-        Init_SWMS $name
-      }
-    }
-  } else {
-
-    SendCmdCOM init aA $name
-
-    SendCmdCOM init "?x-1" $name
-    if {[lindex $wms($name,answ) 0]=="?x-1"} {
-      set cnt 1
-      foreach item {SName l0 l1 l2 l3 slc nlcc0 nlcc1 nlcc2 nlcc3 nlcc4 nlcc5 nlcc6 nlcc7 pnlc} {
-        set wms($name,swms,$item) [lindex $wms($name,answ) $cnt]
-        incr cnt
-      }
-      set wms($name,swms,lamda) ""
-      for {set i 0} {$i<1044} {incr i} {
-
-        set lmd1 [expr {round(1000*($wms($name,swms,l0) + $wms($name,swms,l1)*$i + $wms($name,swms,l2)*$i*$i + $wms($name,swms,l3)*$i*$i*$i))}]
-        lappend wms($name,swms,lamda) $lmd1
-      }
-      foreach lamda $wms($name,swms,lamda) {
-
-        set wms($name,$lamda,Io) 1
-      }
-
-      set wms($name,swms,Init) "inited"
-    } else {
-      set wms($name,swms,Init) $wms($name,answ)
-    }
-  }
-}
-
 proc Meas_SWMS {name join n} {
 global wms
 
@@ -196,43 +158,54 @@ proc runSWMS {name} {
 global wms
 
 # establish communication with swms program
- if {$wms(active)} {
-  if {$wms($name,active)} {
-    set a [lsearch $wms(port) "$wms($name,adr,moxa):$wms($name,port,swms)"]
-    if {$a==-1} {
-      if {[catch {socket $wms($name,adr,moxa) $wms($name,port,swms)} wms($name,socket,swms)]} {
+  if {$wms(active)} {
+    if {$wms($name,active)} {
+      set a [lsearch $wms(port) "$wms($name,adr,moxa):$wms($name,port,swms)"]
+      if {$a==-1} {
+        if {[catch {socket $wms($name,adr,moxa) $wms($name,port,swms)} wms($name,socket,swms)]} {
 
-         set answ [tk_messageBox -message "Нет связи с $wms($name,adr,moxa):$wms($name,port,swms) портом. Проверьте подключение устройств." -title "Error" -type ok -icon error]
+           set answ [tk_messageBox -message "Нет связи с $wms($name,adr,moxa):$wms($name,port,swms) портом. Проверьте подключение устройств." -title "Error" -type ok -icon error]
+        } else {
+          fconfigure $wms($name,socket,swms) -buffering line -translation cr -blocking 0
+          fileevent  $wms($name,socket,swms) readable [list handleRemCmdSpec $wms($name,socket,swms) $name]
+
+          lappend wms(port) "$wms($name,adr,moxa):$wms($name,port,swms)"
+          lappend wms(portname) "$name"
+
+          Init_SWMS $name
+        }
       } else {
-        fconfigure $wms($name,socket,swms) -buffering line -translation cr -blocking 0
-        fileevent  $wms($name,socket,swms) readable [list handleRemCmdSpec $wms($name,socket,swms) $name]
 
-        lappend wms(port) "$wms($name,adr,moxa):$wms($name,port,swms)"
-        lappend wms(portname) "$name"
-
+        set wms($name,socket,swms) $wms([lindex $wms(portname) $a],socket,swms)
         Init_SWMS $name
       }
     } else {
 
-      set wms($name,socket,swms) $wms([lindex $wms(portname) $a],socket,swms)
-      Init_SWMS $name
+      set a [lsearch $wms(port) "$wms($name,adr,moxa):$wms($name,port,swms)"]
+      if {$a!=-1} {
+        set flag 1
+        foreach nm $wms(zond) {
+          if {$wms($nm,active) && "$wms($name,adr,moxa):$wms($name,port,swms)"=="$wms($nm,adr,moxa):$wms($nm,port,swms)"} {set flag 0}
+        }
+        if {$flag} {
+          catch {close $wms([lindex $wms(portname) $a],socket,swms)}
+          set wms(port) [lreplace $wms(port) $a $a]
+          set wms(portname) [lreplace $wms(portname) $a $a]
+        }
+      }
     }
   } else {
-
-    set a [lsearch $wms(port) "$wms($name,adr,moxa):$wms($name,port,swms)"]
-    if {$a!=-1} {
-      set flag 1
-      foreach nm $wms(zond) {
-        if {$wms($nm,active) && "$wms($name,adr,moxa):$wms($name,port,swms)"=="$wms($nm,adr,moxa):$wms($nm,port,swms)"} {set flag 0}
-      }
-      if {$flag} {
-        catch {close $wms([lindex $wms(portname) $a],socket,swms)}
-        set wms(port) [lreplace $wms(port) $a $a]
-        set wms(portname) [lreplace $wms(portname) $a $a]
-      }
+    set lmd1 200000
+    foreach item {SName l0 l1 l2 l3 slc nlcc0 nlcc1 nlcc2 nlcc3 nlcc4 nlcc5 nlcc6 nlcc7 pnlc} {
+      set wms($name,swms,$item) "no_act"
+      incr cnt
+    }
+    set wms($name,swms,lamda) ""
+    for {set i 0} {$i<1044} {incr i} {
+      lappend wms($name,swms,lamda) $lmd1
+      incr lmd1 766
     }
   }
- }
 }
 
 proc SendCmdCOM {a cmd name} {

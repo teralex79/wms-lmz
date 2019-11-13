@@ -3,7 +3,7 @@ if {$wms(console)} {
   console show
 }
 
-set wms(active) 1
+set wms(active) 0
 set wms(temp) 0
 set wms(zndjntctr) 0
 

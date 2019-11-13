@@ -181,7 +181,7 @@ global wms
 
 proc ContMeas {name join n rep} {
 global wms meas
-
+puts "ContMeas $name $join $n $rep"
   if {$wms($name,cont)<1} {
     if {$wms($name,cnt)} {
        set wms($name,cnt) 0
@@ -268,7 +268,11 @@ global wms
 
   if {!$join || ($join==1 && $wms($name,Io1)) || ($join==2 && $wms($name,Io2))} {
 
-    Meas_SWMS $name $join $n
+    if {$wms(active)} {
+      Meas_SWMS $name $join $n
+    } else {
+      incr wms($name,cont)
+    }
   } else {
     incr wms($name,cont)
   }
@@ -344,7 +348,7 @@ global wms
     vwait wms($name,done)
   }
 
-  Meas_SWMS $name 1 k
+  if {$wms(active)} {Meas_SWMS $name 1 k}
 
   set wms($name,done) 0
   set wms($name,state,next) "Развести"
@@ -353,12 +357,17 @@ global wms
   if {!$wms($name,done)} {
     vwait wms($name,done)
   }
-  Meas_SWMS $name 0 k
+  if {$wms(active)} {Meas_SWMS $name 0 k}
 
   set cnt 0
   foreach lamda $wms($name,swms,lamda) {
-    set Ip [lindex $wms($name,swms,Icalc,k,0) $cnt]
-    set Ic [lindex $wms($name,swms,Icalc,k,1) $cnt]
+    if {$wms(active)} {
+      set Ip [lindex $wms($name,swms,Icalc,k,0) $cnt]
+      set Ic [lindex $wms($name,swms,Icalc,k,1) $cnt]
+    } else {
+      set Ip 0
+      set Ic 0
+    }
     if {$Ip>0 && $Ic>0} {
       set wms($name,coef,$lamda) [format "%6.4f" [expr {1.*$Ip/$Ic}]]
     } else {
