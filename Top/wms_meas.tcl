@@ -382,12 +382,12 @@ global wms meas
 
   set wms(startmeas) 0
   foreach name $wms(zond) {
-    foreach color $wms(colorlist) {
-      set wms($name,I,$color)    ""
-      set wms($name,Io1,$color)  ""
-      set wms($name,Io2,$color)  ""
-      set wms($name,IIo,$color)  ""
-    }
+#    foreach color $wms(colorlist) {
+#      set wms($name,I,$color)    ""
+#      set wms($name,Io1,$color)  ""
+#      set wms($name,Io2,$color)  ""
+#      set wms($name,IIo,$color)  ""
+#    }
 
     set wms($name,I,Spectrum) ""
     set wms($name,Io1,Spectrum) ""
