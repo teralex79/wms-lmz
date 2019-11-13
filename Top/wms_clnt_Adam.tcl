@@ -114,7 +114,7 @@ global rs wms val ent
   } else {
     if {$rep<3} {
 
-      after [expr {$rep*1500}]
+      after [expr {($rep + 1)*1500}]
       incr rep
       after 100
       CheckZond $name ${adr} $rep
