@@ -113,6 +113,7 @@ global wms meas
     puts $of "# $name"
     puts $of ""
 
+    puts $of "wms($name,new_meth)  $wms($name,new_meth)"
     puts $of "wms($name,adr,moxa)  $wms($name,adr,moxa)"
     puts $of "wms($name,port,swms) $wms($name,port,swms)"
     puts $of "wms($name,port,adam) $wms($name,port,adam)"
