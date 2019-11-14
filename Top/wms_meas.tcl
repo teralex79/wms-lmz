@@ -356,13 +356,8 @@ global wms
 
   set cnt 0
   foreach lamda $wms($name,swms,lamda) {
-    if {$wms(active)} {
-      set Ip [lindex $wms($name,swms,Icalc,k,0) $cnt]
-      set Ic [lindex $wms($name,swms,Icalc,k,1) $cnt]
-    } else {
-      set Ip 0
-      set Ic 0
-    }
+    set Ip [lindex $wms($name,swms,Icalc,k,0) $cnt]
+    set Ic [lindex $wms($name,swms,Icalc,k,1) $cnt]
     if {$Ip>0 && $Ic>0} {
       set wms($name,coef,$lamda) [format "%6.4f" [expr {1.*$Ip/$Ic}]]
     } else {
