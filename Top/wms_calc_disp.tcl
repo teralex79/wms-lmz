@@ -1,7 +1,7 @@
 ## Функции рассчета r32 и влажности по измеренным данным.
 
 ### Так же графический интерфейс и доп. процедуры для возможности постобработки, путем выбора файла или папки с файлами с измеренными данными.
-### Для запуска режима постобработки файл запускается с аргументом, напр. "1"
+### Для запуска режима постобработки файл запускается с аргументом, напр. "1" (Уже не актуально, можно запускать без аргументов)
 
 if {$argc>0 || ([info exists ::argv0] && $::argv0 eq [info script])} {
   set wms(top) 1
@@ -64,9 +64,7 @@ if {$wms(top)} {
   set wms(S07,ALFAI) -45
 
   set wms(tolerance) 5
-#  set wms(calibr) 2
   set wms(calibr) 7
-#  set wms(calibr) 1
 
   frame .fr
   pack .fr
@@ -132,58 +130,6 @@ global calc wms
 
   set file [tk_getOpenFile -initialfile $infile -filetypes $types -parent . -initialdir $w]
   OpenFile $file
-}
-
-proc OpenFile {file} {
-global calc wms
-
-  if {[llength $file]} {
-## Sohranenie poslednego vvedennogo puti
-
-    .fr.bt configure -state disable
-    .fr.bt2 configure -state disable
-
-    set path [split [lindex $file 0] "\\/"]
-    set path2 ""
-    for {set i 0} {$i<[expr {[llength $path]-1}]} {incr i} {
-      set path2 "${path2}[lindex $path $i]/"
-    }
-    set path2 "[string range ${path2} 0 end-1]"
-
-    set calc(initialdir) $path2
-    set name [lindex [split [lindex $path end] "_."] 0]
-    set wms($name,type) [lindex [split [lindex $path end] "_."] 1]
-
-    set cnt 0
-    foreach nm {S01 S02 S04 S05 S07} {
-      if {$nm==$name} {incr cnt}
-    }
-    foreach type {swms nwms test txt} {
-      if {$type==$wms($name,type)} {incr cnt}
-    }
-    if {$cnt==2} {
-      set of [open [info hostname]_unimod.ini w]
-      puts $of "calc(initialdir) $path2"
-      foreach nm {S01 S02 S04 S05 S07} {
-        puts $of "wms($nm,l,uv)    $wms($nm,l,uv)   "
-        puts $of "wms($nm,l,ir)    $wms($nm,l,ir)   "
-        puts $of "wms($nm,npoints) $wms($nm,npoints)"
-      }
-      close $of
-      FormOldWMS   $name $path2
-      if {$wms(unimod)} {ReadRAW_Disp $name $path2}
-      if {$wms(top)} {
-        .fr.bt configure -state active -text "OpenFile"
-        .fr.bt2 configure -state active -text "OpenDir"
-      }
-    } else {
-      .fr.bt configure -state active
-      .fr.bt2 configure -state active
-    }
-  } else {
-    .fr.bt configure -state active
-    .fr.bt2 configure -state active
-  }
 }
 
 proc DirDialog {} {
@@ -257,6 +203,58 @@ global wms
   }
 }
 
+proc OpenFile {file} {
+global calc wms
+
+  if {[llength $file]} {
+## Sohranenie poslednego vvedennogo puti
+
+    .fr.bt configure -state disable
+    .fr.bt2 configure -state disable
+
+    set path [split [lindex $file 0] "\\/"]
+    set path2 ""
+    for {set i 0} {$i<[expr {[llength $path]-1}]} {incr i} {
+      set path2 "${path2}[lindex $path $i]/"
+    }
+    set path2 "[string range ${path2} 0 end-1]"
+
+    set calc(initialdir) $path2
+    set name [lindex [split [lindex $path end] "_."] 0]
+    set wms($name,type) [lindex [split [lindex $path end] "_."] 1]
+
+    set cnt 0
+    foreach nm {S01 S02 S04 S05 S07} {
+      if {$nm==$name} {incr cnt}
+    }
+    foreach type {swms nwms test txt} {
+      if {$type==$wms($name,type)} {incr cnt}
+    }
+    if {$cnt==2} {
+      set of [open [info hostname]_unimod.ini w]
+      puts $of "calc(initialdir) $path2"
+      foreach nm {S01 S02 S04 S05 S07} {
+        puts $of "wms($nm,l,uv)    $wms($nm,l,uv)   "
+        puts $of "wms($nm,l,ir)    $wms($nm,l,ir)   "
+        puts $of "wms($nm,npoints) $wms($nm,npoints)"
+      }
+      close $of
+      FormOldWMS   $name $path2
+      if {$wms(unimod)} {ReadRAW_Disp $name $path2}
+      if {$wms(top)} {
+        .fr.bt configure -state active -text "OpenFile"
+        .fr.bt2 configure -state active -text "OpenDir"
+      }
+    } else {
+      .fr.bt configure -state active
+      .fr.bt2 configure -state active
+    }
+  } else {
+    .fr.bt configure -state active
+    .fr.bt2 configure -state active
+  }
+}
+
 proc ReadK2 {} {
 global calc
 
@@ -304,6 +302,7 @@ global calc wms
   set tnb [blt::tabnotebook .grph$name.nb -takefocus 1 -samewidth no]
   pack $tnb -expand yes -fill both
   set tab 0
+#Creating window with charts
   foreach tb {I_Io Spec2 Calc} {
     catch {$tnb delete $tab; destroy $tnb.c${name}}
     switch $tb {
@@ -416,6 +415,7 @@ global calc wms
     }
     incr tab
   }
+#Creating window with parametrs for calculation
   if {!$wms(dd)} {
     toplevel .param
     wm title .param "Parameters"
@@ -460,6 +460,7 @@ global calc wms
   }
 }
 
+# Reading RAW file
 proc ReadRAW_Disp {name file} {
 global calc wms
 
@@ -478,6 +479,7 @@ global calc wms
   set pnt  0
   set cnt3 0
   set flag 0
+  set New_method 0
   set pi [expr {acos(-1)}]
 
   set calc($name,tr) {}
@@ -485,6 +487,8 @@ global calc wms
   foreach str $lines {
     if {[llength $str]>0} {
       if {!$flag} {
+
+## Read coefficients and initial parameters
         if {$line==0} {
           set s [split $str " :;"]
           if {$wms($name,type)=="txt"} {set wms($name,type) [lindex $s end-1]}
@@ -529,6 +533,16 @@ global calc wms
             }
           }
         }
+        if {[lsearch $str "M(*"]!=-1} {
+          set New_method 1
+          set km [split $str ";"]
+          foreach item $km {
+            if {[llength $item]>0} {
+              set kkm [split $item "=()"]
+              lappend calc($name,coef_m) [lindex $kkm 3]
+            }
+          }
+        }
         if {[lindex $str 0]=="hh:mm:ss"} {
           set flag 1
           set indxN [lsearch $str "N*"]
@@ -550,12 +564,14 @@ global calc wms
 
           if {$wms($name,type)=="swms" || $wms($name,type)=="test"} {
             if {$wms(top)} {
+## If calculation is executed as separate program then additional windows with charts and limitation and correction parameters open
               ChooseRange $name
             }
             update
-
+# Limit the spectrum by lamda start
             set cnt4 0
             set flag2 0
+# Fix indexes for min and max lamda
             foreach item $calc($name,lamda) {
               if {$flag2==0 && $item>=$wms($name,l,uv)} {
      #uv
@@ -571,6 +587,8 @@ global calc wms
               incr cnt4
             }
           }
+
+## Add points for averaging
           if {$wms($name,type)=="swms" || $wms($name,type)=="test"} {
             set calc(aver) 11
             set min [expr {$min-$calc(aver)}]
@@ -581,10 +599,12 @@ global calc wms
             set aver 0
           }
 
+# Limit spectrum
           set calc($name,coef,cut)  [lrange $calc($name,coef)  $min $max]
           set calc($name,lamda,cut) [lrange $calc($name,lamda) $min $max]
           set calc($name,s,cut)     [lrange $calc($name,s)     $min $max]
 
+# Cut an overload peak from the spectrum
           if {$wms($name,type)=="swms"} {
             set cnt4 0
             set flag2 0
@@ -610,7 +630,7 @@ global calc wms
               set calc($name,s,cut)     [lreplace $calc($name,s,cut)     $lrep1 $lrep2]
             }
           }
-
+# Reduce number of points for calculating
           set step [format "%2.0f" [expr {1.*([llength $calc($name,lamda,cut)] - $aver - 1)/$wms($name,npoints)}]]
           if {$step<1} {set step 1}
           set cut {}
@@ -626,6 +646,7 @@ global calc wms
           set calc($name,red,index) -1
           set calc($name,blu,index) -1
 
+# Find indexes of the nearest blue and red wavelengths for old 2-wave method
           if {[llength $calc($name,lamda,cutnmb)]<11} {
             set d 40000
           } elseif {[llength $calc($name,lamda,cutnmb)]<200} {
@@ -666,13 +687,16 @@ global calc wms
         }
         incr line
       } else {
+#Read Data
 
+#Calculate the number of rows for one measurement point depending on the method
         if {$cnt3==[expr {3+3*$calc($name,Io1)+3*$calc($name,Io2)}]} {
           incr pnt
           set cnt3 0
         }
 
         if {$cnt3==0} {
+#If it is first string of meas point set its parameters
           set calc($name,time,$pnt) [lindex $str 0]
           set calc($name,N,$pnt)    [lindex $str $indxN]
           set calc($name,X,$pnt)    [lindex $str $indxX]
@@ -681,6 +705,7 @@ global calc wms
           set calc($name,T,$pnt)    [lindex $str $indxT]
 
           lappend calc($name,tr) $calc($name,X,$pnt)
+#
           if {$calc($name,X,$pnt)<2} {lappend calc($name,Io,cntlist) $pnt}
         }
         set Join [lindex $str $indxJ]
@@ -759,6 +784,9 @@ global calc wms
         }
       }
     }
+
+  } elseif {$New_method} {
+
   } else {
     set calc($name,Io) {}
     set i 0
