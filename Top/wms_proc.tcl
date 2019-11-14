@@ -451,8 +451,12 @@ global wms rs meas
       set cnt2 1
 
       foreach name $wms(zond) {
-
-        checkbutton $zond.$cnt1$cnt2 -variable wms($name,$item) -width 6 -justify center  -relief ridge
+        if {$wms($name,new_meth) && $item == "Io1"} {
+          set st disable
+        } else {
+          set st active
+        }
+        checkbutton $zond.$cnt1$cnt2 -variable wms($name,$item) -width 6 -justify center -relief ridge -state $st
         grid $zond.$cnt1$cnt2 -row $cnt1 -column $cnt2  -sticky news
         incr cnt2
       }
