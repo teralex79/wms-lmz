@@ -87,25 +87,36 @@ global wms
     SendCmdCOM meas S $name
     set wms($name,swms,Imeas,$n,$join) [lreplace [lreplace $wms($name,answ) 0 7] end-1 end]
 
-    set Iblack ""
-    foreach item {0 1 2 3 1038 1039 1040 1041 1042 1043} {
-      lappend Iblack [lindex $wms($name,swms,Imeas,$n,$join) $item]
-    }
-
-    set wms($name,swms,Iblack) [lindex [lsort -increasing $Iblack] 5]
-    set wms($name,swms,Icalc,$n,$join) ""
-
-    foreach item $wms($name,swms,Imeas,$n,$join) {
-      lappend wms($name,swms,Icalc,$n,$join) [expr {$item - $wms($name,swms,Iblack)}]
-    }
-
   } else {
     set wms($name,swms,Imeas,$n,$join) {}
-    set wms($name,swms,Icalc,$n,$join) {}
+    set sigma 120000.
+    set pi 3.14
+    set cnt 0
     foreach lamda $wms($name,swms,lamda) {
-      lappend wms($name,swms,Imeas,$n,$join) 1
-      lappend wms($name,swms,Icalc,$n,$join) 1
+      set dev 0.2
+      set mid 1.0
+      set rnd [expr {$mid + ($dev/2 - rand()*$dev)}]
+
+      if {$cnt < 4 || $cnt > 1037} {
+        set val 0
+      } else {
+        set val [expr {(1 + $join)*pow(10,9)*$rnd*exp(0 - pow(($lamda-600000.)/$sigma,2)/2.)/($sigma*pow(2*$pi,0.5))}]
+      }
+      lappend wms($name,swms,Imeas,$n,$join) $val
+      incr cnt
     }
+  }
+
+  set Iblack ""
+  foreach item {0 1 2 3 1038 1039 1040 1041 1042 1043} {
+    lappend Iblack [lindex $wms($name,swms,Imeas,$n,$join) $item]
+  }
+
+  set wms($name,swms,Iblack) [lindex [lsort -increasing $Iblack] 5]
+  set wms($name,swms,Icalc,$n,$join) ""
+
+  foreach item $wms($name,swms,Imeas,$n,$join) {
+    lappend wms($name,swms,Icalc,$n,$join) [expr {$item - $wms($name,swms,Iblack)}]
   }
 
   if {!$wms($name,Io1) || !$wms($name,Io2)} {

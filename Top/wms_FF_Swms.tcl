@@ -137,7 +137,12 @@ global wms a
             }
           }
           default {
-            if {![info exists wms($name,swms,Imeas,$n,$join)] || ($join && $wms($name,new_meth) && $wms($name,tr,current)>2)} {
+            if {$join && $wms($name,new_meth) && $wms($name,tr,current)>2} {
+
+              foreach meas $wms($name,swms,Ijn,$join) {
+                puts -nonewline $log "[format "%8.1f" $meas]"
+              }
+            } elseif {![info exists wms($name,swms,Imeas,$n,$join)]} {
               foreach lamda $wms($name,swms,lamda) {
                 puts -nonewline $log "[format "%8d" 1]"
               }
@@ -146,8 +151,11 @@ global wms a
                 if {$wms(active)} {
                   puts -nonewline $log "[format "%8d" $meas]"
                 } else {
-                  puts -nonewline $log "[format "%8.1f" 2]"
+                  puts -nonewline $log "[format "%8.1f" $meas]"
                 }
+              }
+              if {$join && $wms($name,new_meth) && $wms($name,tr,current)<2} {
+                set wms($name,swms,Ijn,$join) $wms($name,swms,Imeas,$n,$join)
               }
             }
           }
