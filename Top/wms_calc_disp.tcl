@@ -266,7 +266,7 @@ global calc
   set calc(hk33) {}
   set calc(hk41) {}
 
-  set file "K2.txt"
+  set file "../Data/Config/K2.txt"
   set of [open $file]
   set data [read $of]
   close $of
