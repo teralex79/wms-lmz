@@ -266,7 +266,13 @@ global calc
   set calc(hk33) {}
   set calc(hk41) {}
 
-  set file "../Data/Config/K2.txt"
+#Find current path
+  set Current_Dir [pwd]
+
+# Replace (in the Current_Dir in variable Current_Dir) every instance of "/Top" which is a word by itself with "" (actualy remove "/Top" if exist):
+  regsub -all {\/Top} $Current_Dir "" Current_Dir
+
+  set file "${Current_Dir}/Data/Config/K2.txt"
   set of [open $file]
   set data [read $of]
   close $of
