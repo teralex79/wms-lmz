@@ -239,7 +239,7 @@ global calc wms
         puts $of "wms($nm,npoints) $wms($nm,npoints)"
       }
       close $of
-      FormOldWMS   $name $path2
+      FormOldWMS $name $path2
       if {$wms(unimod)} {ReadRAW_Disp $name $path2}
       if {$wms(top)} {
         .fr.bt configure -state active -text "OpenFile"
@@ -538,16 +538,6 @@ global calc wms
             }
           }
         }
-        if {[lsearch $str "M(*"]!=-1} {
-          set New_method 1
-          set km [split $str ";"]
-          foreach item $km {
-            if {[llength $item]>0} {
-              set kkm [split $item "=()"]
-              lappend calc($name,coef_m) [lindex $kkm 3]
-            }
-          }
-        }
         if {[lindex $str 0]=="hh:mm:ss"} {
           set flag 1
           set indxN [lsearch $str "N*"]
@@ -756,7 +746,14 @@ global calc wms
 
   set calc($name,points) $pnt
 ## Calculate Io
-  if {$calc($name,Io1) || $calc($name,Io2)} {
+  if {$calc($name,new_meth)} {
+    set i 0
+    catch {global x${name}Spec2 y${name}Spec2}
+    foreach lamda $calc($name,lamda) {
+      foreach item $calc($name,Io,cntlist) {
+      }
+    }
+  } elseif {$calc($name,Io1) || $calc($name,Io2)} {
     for {set pnt 0} {$pnt<=$calc($name,points)} {incr pnt} {
       set calc($name,Io,$pnt) {}
       set i 0
@@ -789,9 +786,6 @@ global calc wms
         }
       }
     }
-
-  } elseif {$New_method} {
-
   } else {
     set calc($name,Io) {}
     set i 0
@@ -808,7 +802,7 @@ global calc wms
       lappend calc($name,Io) [expr {(1.+$wms($name,corIo)/100.)*$Io/[llength $calc($name,Io,cntlist)]}]
       incr i
 
-      set x${name}Spec2(++end) [expr {$lamda}]
+      set x${name}Spec2(++end) $lamda
       set y${name}Spec2(++end) [lindex $calc($name,Io) end]
     }
     set calc($name,Io,cut) [lrange $calc($name,Io) $min $max]
@@ -855,9 +849,6 @@ global c33 c41 a33 a41
   }
   set s_UV [lindex $calc($name,s,decr)   0]
   set s_IR [lindex $calc($name,s,decr) end]
-
-#  set s_UV [lindex [lsort -decreasing $calc($name,s,cut)]   1]
-#  set s_IR [lindex [lsort -decreasing $calc($name,s,cut)] end]
 
   set of3 [open $file/${name}_Gs.txt "w"]
   puts -nonewline $of3 "Дата: ${date}; "
@@ -1091,7 +1082,7 @@ global c33 c41 a33 a41
         set Ref_aver 0
 
         for {set i [expr {$k-$aver}]} {$i<=[expr {$k+$aver}]} {incr i} {
-          if {!$calc($name,Io1) && !$calc($name,Io2)} {
+          if {(!$calc($name,Io1) && !$calc($name,Io2)) || $calc($name,new_meth)} {
             set Io  [lindex $calc($name,Io,cut) $i]
           } else {
             set Io  [lindex $calc($name,Io,$pnt,cut) $i]
@@ -1166,7 +1157,7 @@ global c33 c41 a33 a41
           set Ref_aver 0
 
           for {set i [expr {$k-$aver}]} {$i<=[expr {$k+$aver}]} {incr i} {
-            if {!$calc($name,Io1) && !$calc($name,Io2)} {
+            if {(!$calc($name,Io1) && !$calc($name,Io2)) || $calc($name,new_meth)} {
               set Io  [lindex $calc($name,Io,cut) $i]
             } else {
               set Io  [lindex $calc($name,Io,$pnt,cut) $i]
@@ -1908,8 +1899,7 @@ global wms mff
   } else {
     set fn ${name}_$wms($name,type)
   }
-#  .fr.bt2 configure -text ${fn}
-#  update
+
   set of [open "$file/${fn}.txt"]
   set data [read $of]
   close $of
@@ -1920,6 +1910,7 @@ global wms mff
   set cnt 0
   set cnt3 0
   set reads 1
+  set mff($name,new_meth) 0
 
   foreach str $lines {
     if {[llength $str]>0} {
@@ -1946,6 +1937,10 @@ global wms mff
           set b [lindex [split [lindex $str 0] =] 1]
           set mff($name,Io1) [string range $b 0 0]
           set mff($name,Io2) [string range $b end end]
+        }
+        if {[lsearch $str "NewMeth=*"]!=-1} {
+          set b [lindex [split [lindex $str 0] =] 1]
+          set mff($name,new_meth) [string range $b 0 0]
         }
         if {[lsearch $str "L(мм)=*"]!=-1} {
           set b [split $str ";"]
@@ -2029,7 +2024,7 @@ global wms mff
           set mff($name,temp,$reads) [lindex $str 8]
           set mff(x,$reads) [lindex $str 3]
           set mff(y,$reads) [lindex $str 4]
-          if {$mff(x,$reads)<5} {
+          if {$mff(x,$reads)<2} {
 
             lappend mff($name,Io,cntlist) $reads
           }
@@ -2073,8 +2068,40 @@ global wms mff
   for {set reads 1} {$reads<=$mff(end)} {incr reads} {
 
 ## Calculate Io
+    if {$mff($name,new_meth)} {
+      set i 0
+      foreach lamda $mff($name,lamda) {
+        set cnt 1
+        foreach rds "[lindex $mff($name,Io,cntlist) 0] [lindex $mff($name,Io,cntlist) end]" {
 
-    if {$mff($name,Io1) || $mff($name,Io2)} {
+          set a4 [expr {1.*([lindex $mff($name,Iсв1,1,$rds) $i] - [lindex $mff($name,Bcur,1,$rds) $i])}]
+          set Ref [expr {1.*([lindex $mff($name,Ref,1,$rds) $i] - [lindex $mff($name,Bcur,1,$rds) $i])}]
+          if {$Ref!=0} {set a4 [expr {$a4/$Ref}]}
+          set Io1 [expr {[lindex $mff($name,coef) $i]*$a4}]
+
+          if {$mff($name,Io2)} {
+            set a5 [expr {1.*([lindex $mff($name,Iсв2,2,$rds) $i] - [lindex $mff($name,Bcur,2,$rds) $i])}]
+            set Ref [expr {1.*([lindex $mff($name,Ref,2,$rds) $i] - [lindex $mff($name,Bcur,2,$rds) $i])}]
+            if {$Ref!=0} {set a5 [expr {$a5/$Ref}]}
+            set Io2 [expr {[lindex $mff($name,coef) $i]*$a5}]
+          } else {
+            set Io2 $Io1
+          }
+
+          set Io [expr {($Io2 + $Io1)/2.}]
+
+          if {$cnt==1} {
+            set Io_1 $Io
+          } else {
+            set Io_2 $Io
+          }
+          incr cnt
+        }
+        lappend mff($name,Io_1) $Io_1
+        lappend mff($name,Io_2) $Io_2
+        incr i
+      }
+    } elseif {$mff($name,Io1) || $mff($name,Io2) } {
       set i 0
       foreach lamda $mff($name,lamda) {
         if {!$mff($name,Io1)} {
@@ -2102,31 +2129,24 @@ global wms mff
         incr i
       }
     } else {
-
-      set mff($name,Io) {}
       set mff($name,Io_1) {}
       set mff($name,Io_2) {}
       set i 0
       foreach lamda $mff($name,lamda) {
-        set Io 0
         set cnt 1
-        foreach rds $mff($name,Io,cntlist) {
+        foreach rds "[lindex $mff($name,Io,cntlist) 0] [lindex $mff($name,Io,cntlist) end]" {
           set a2 [expr {[lindex $mff($name,Iразв,0,$rds) $i] - [lindex $mff($name,Bcur,0,$rds) $i]}]
           set Ref [lindex $mff($name,Ref,0,$rds) $i]
           if {$Ref!=0} {set a2 [expr {1.*$a2/$Ref}]}
-          set Io [expr {$Io + $a2}]
-update
           if {$cnt==1} {
             set Io_1 $a2
-          } elseif  {$cnt==[llength $mff($name,Io,cntlist)]} {
+          } else {
             set Io_2 $a2
           }
-          if {[llength $mff($name,Io,cntlist)]==1} {set Io_2 $Io_1}
           incr cnt
         }
         lappend mff($name,Io_1) $Io_1
         lappend mff($name,Io_2) $Io_2
-        lappend mff($name,Io) [expr {1.*$Io/[llength $mff($name,Io,cntlist)]}]
         incr i
       }
     }
@@ -2149,17 +2169,13 @@ update
     set mff(I_blu,$reads)   [lindex $mff($name,I,$reads) $blu]
     set mff(I_red,$reads)   [lindex $mff($name,I,$reads) $red]
 
-    if {$mff($name,Io1) || $mff($name,Io2)} {
+    if {($mff($name,Io1) || $mff($name,Io2)) && !$mff($name,new_meth)} {
       set mff(I_blu01,$reads) [lindex $mff($name,Io1,$reads) $blu]
       set mff(I_blu02,$reads) [lindex $mff($name,Io2,$reads) $blu]
       set mff(I_red01,$reads) [lindex $mff($name,Io1,$reads) $red]
       set mff(I_red02,$reads) [lindex $mff($name,Io2,$reads) $red]
     } else {
 
-#      set mff(I_blu01,$reads) [lindex $mff($name,Io) $blu]
-#      set mff(I_blu02,$reads) [lindex $mff($name,Io) $blu]
-#      set mff(I_red01,$reads) [lindex $mff($name,Io) $red]
-#      set mff(I_red02,$reads) [lindex $mff($name,Io) $red]
       set mff(I_blu01,$reads) [lindex $mff($name,Io_1) $blu]
       set mff(I_blu02,$reads) [lindex $mff($name,Io_2) $blu]
       set mff(I_red01,$reads) [lindex $mff($name,Io_1) $red]
