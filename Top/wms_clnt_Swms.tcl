@@ -98,7 +98,7 @@ global wms
       set rnd [expr {$mid + ($dev/2 - rand()*$dev)}]
 
       if {$cnt < 4 || $cnt > 1037} {
-        set val 0
+        set val 0.1
       } else {
         set val [expr {(1 + $join)*pow(10,9)*$rnd*exp(0 - pow(($lamda-600000.)/$sigma,2)/2.)/($sigma*pow(2*$pi,0.5))}]
       }
@@ -128,9 +128,11 @@ global wms
   }
   if {$join} {
     if {$n!="k"} {
-      foreach item $wms($name,swms,Icalc,$n,$join) lamda $wms($name,swms,lamda) {
-        set wms($name,$lamda,Io) [expr {$item*$wms($name,coef,$lamda)}]
-      }
+#      if {!$wms($name,new_meth) || ($wms($name,tr,current)<10 && $n==1)} {
+        foreach item $wms($name,swms,Icalc,$n,$join) lamda $wms($name,swms,lamda) {
+          set wms($name,$lamda,Io) [expr {$item*$wms($name,coef,$lamda)}]
+        }
+#      }
     }
     switch $join {
       "1" {
