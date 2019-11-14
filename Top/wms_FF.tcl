@@ -11,19 +11,45 @@ global wms
 
     puts -nonewline $log [format "%4s" $name]
     puts -nonewline $log [format "%7s" $wms($name,type)]
+    puts -nonewline $log [format "%7s" lamda]
     foreach lamda $wms($name,swms,lamda) {
 
       puts -nonewline $log [format "%8s" $lamda]
     }
 
     puts $log ""
+    switch $wms($name,type) {
 
+      "swms" {
+        foreach join {1 0} type {Iñ Ið} {
+          puts -nonewline $log [clock format [clock seconds] -format "%y-%m-%d"]
+          puts -nonewline $log [format "%1s" " "]
+          puts -nonewline $log [clock format [clock seconds] -format "%H:%M:%S"]
+
+          puts -nonewline $log [format "%4s" $name]
+          puts -nonewline $log [format "%7s" $wms($name,type)]
+          puts -nonewline $log [format "%7s" $type]
+          if {!$wms(active)} {
+            set wms($name,swms,Imeas,k,$join) {}
+            foreach lamda $wms($name,swms,lamda) {
+
+              lappend wms($name,swms,Imeas,k,$join) 1
+            }
+          }
+          foreach item $wms($name,swms,Imeas,k,$join) {
+            puts -nonewline $log [format "%8d" $item]
+          }
+          puts $log ""
+        }
+      }
+    }
     puts -nonewline $log [clock format [clock seconds] -format "%y-%m-%d"]
     puts -nonewline $log [format "%1s" " "]
     puts -nonewline $log [clock format [clock seconds] -format "%H:%M:%S"]
 
     puts -nonewline $log [format "%4s" $name]
     puts -nonewline $log [format "%7s" $wms($name,type)]
+    puts -nonewline $log [format "%7s" coef_k]
 
     switch $wms($name,type) {
 
