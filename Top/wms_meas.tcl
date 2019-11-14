@@ -1,8 +1,6 @@
 proc StartMeas {} {
 global wms meas
 
-  set wms(nwms,ready) 1
-
   foreach name $wms(zond) {
     if {$wms($name,firstpoint)==1} {
       set wms($name,head_file) 0
@@ -13,14 +11,6 @@ global wms meas
 
     set wms($name,smstat) "meas"
 
-    if {$wms($name,type)=="nwms"} {
-      set wms($name,colorlist) ""
-      foreach color $wms(colorlist) {
-        if {$meas($name,$color)} {
-          lappend wms($name,colorlist) $color
-        }
-      }
-    }
     set wms($name,busytemp) 0
   }
 
@@ -37,11 +27,9 @@ global wms meas
       set answ [tk_messageBox -message "Проверить, что зонд $name разведен?" -title "Question $name" -type yesno -icon question]
       if {$answ=="yes"} {
         set wms($name,done) 0
-        if {$wms($name,type)=="nwms"} {
-          CheckZondNWMS $name 0 0
-        } else {
-          CheckZond $name [format "%02X" $wms($name,adr,adam)] 0
-        }
+
+        CheckZond $name [format "%02X" $wms($name,adr,adam)] 0
+
         if {!$wms($name,done)} {
           vwait wms($name,done)
         }
@@ -181,7 +169,7 @@ global wms
 
 proc ContMeas {name join n rep} {
 global wms meas
-puts "ContMeas $name $join $n $rep"
+
   if {$wms($name,cont)<1} {
     if {$wms($name,cnt)} {
        set wms($name,cnt) 0
