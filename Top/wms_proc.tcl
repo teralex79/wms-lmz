@@ -410,7 +410,7 @@ global wms rs meas
 
     set cnt1 1
 
-    foreach item {L RWI RTI RC RH ALFAI TEMPA TEMPB TEMPC Io1 Io2 Type} {
+    foreach item {L RWI RTI RC RH ALFAI TEMPA TEMPB TEMPC Io1 Io2 Type "New method"} {
 
       label $zond.title${cnt1}0 -text "$item" -width 10 -anchor w
       grid $zond.title${cnt1}0 -row $cnt1 -column 0 -sticky nw
@@ -469,6 +469,25 @@ global wms rs meas
     }
     incr cnt1
 
+    set cnt2 1
+
+    foreach name $wms(zond) {
+      checkbutton $zond.$cnt1$cnt2 -variable wms($name,new_meth) -width 6 -justify center -relief ridge -command {
+        set cnt2 1
+        foreach name $wms(zond) {
+          if {$wms($name,new_meth)} {
+            set wms($name,Io1) 1
+            .prop.nb.fr1.fr.10$cnt2 configure -state disable
+          } else {
+            .prop.nb.fr1.fr.10$cnt2 configure -state active
+          }
+          incr cnt2
+        }
+      }
+      grid $zond.$cnt1$cnt2 -row $cnt1 -column $cnt2  -sticky news
+      incr cnt2
+    }
+    incr cnt1
 ### SpecWMS
 
   set wmsn [frame .prop.nb.fr$ins]
