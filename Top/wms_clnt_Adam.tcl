@@ -53,7 +53,7 @@ proc ZondContrAdam {i name} {
 global ent rs wms
 
   if {$wms(zndjntctr)} {
-    if {!$i || [expr {($i==1 && $wms($name,Io1)) || ($i==2 && $wms($name,Io2))}]} {
+    if {!$i || [expr {($i==1 && $wms($name,Io1)&& (($wms($name,new_meth) && $wms($name,tr,current)<2 ) || !$wms($name,new_meth))) || ($i==2 && $wms($name,Io2)&& (($wms($name,new_meth) && $wms($name,tr,current)<2 ) || !$wms($name,new_meth)))}]} {
 
       set wms($name,nomove,tr) 0
       set adr [format "%02X" $wms($name,adr,adam)]
@@ -72,7 +72,7 @@ global ent rs wms
         SendCommandAdam $name act "\@${adr}DO01"
         if {!$wms(adam,ready)} {vwait wms(adam,ready)}
       }
-puts "ZondContrAdam"
+
       after 1000 "CheckZond $name $adr 1 "
     } else {
 
@@ -86,7 +86,6 @@ puts "ZondContrAdam"
 proc CheckZond {name adr rep} {
 global rs wms val ent
 
-puts "CheckZond"
   set wms(adam,ready) 0
 #  puts $rs($name,adam) "\@${adr}DI"
 #  flush $rs($name,adam)
