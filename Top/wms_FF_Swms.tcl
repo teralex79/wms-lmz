@@ -30,6 +30,7 @@ global wms
   puts $log ""
 
   puts -nonewline $log "Join=$wms($name,Io1)$wms($name,Io2) (Io1,Io2); "
+  puts -nonewline $log "NewMeth=$wms($name,new_meth); "
   puts -nonewline $log "L(μμ)=$wms($name,L); "
   puts -nonewline $log "repeat=$wms(repeat); "
   puts -nonewline $log "PixMode=$wms($name,swms,PixMode); "
@@ -136,13 +137,17 @@ global wms a
             }
           }
           default {
-            if {![info exists wms($name,swms,Imeas,$n,$join)]} {
+            if {![info exists wms($name,swms,Imeas,$n,$join)] || ($join && $wms($name,new_meth) && $wms($name,tr,current)>2)} {
               foreach lamda $wms($name,swms,lamda) {
                 puts -nonewline $log "[format "%8d" 1]"
               }
             } else {
               foreach meas $wms($name,swms,Imeas,$n,$join) {
-                puts -nonewline $log "[format "%8d" $meas]"
+                if {$wms(active)} {
+                  puts -nonewline $log "[format "%8d" $meas]"
+                } else {
+                  puts -nonewline $log "[format "%8.1f" 2]"
+                }
               }
             }
           }
