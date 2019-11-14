@@ -483,6 +483,7 @@ global calc wms
   set pi [expr {acos(-1)}]
 
   set calc($name,tr) {}
+  set calc($name,new_meth) 0
 
   foreach str $lines {
     if {[llength $str]>0} {
@@ -504,6 +505,10 @@ global calc wms
           set b [lindex [split [lindex $str 0] =] 1]
           set calc($name,Io1) [string range $b 0 0]
           set calc($name,Io2) [string range $b end end]
+        }
+        if {[lsearch $str "NewMeth=*"]!=-1} {
+          set b [lindex [split [lindex $str 0] =] 1]
+          set calc($name,new_meth) [string range $b 0 0]
         }
         if {[lsearch $str "L(μμ)=*"]!=-1} {
           set b [split $str ";"]
