@@ -485,7 +485,8 @@ global wms rs meas
 
     set cnt1 1
 
-    set lst {Adr_Moxa Port_swms Port_adam Adr_adam PixMode IntTime SName l0 l1 l2 l3 "" cntr ch InitSpec Meas}
+#    set lst {Adr_Moxa Port_swms Port_adam Adr_adam PixMode IntTime SName l0 l1 l2 l3 "" cntr ch InitSpec Meas}
+    set lst {Adr_Moxa Port_swms Port_adam Adr_adam PixMode IntTime SName l0 l1 l2 l3 InitSpec Meas}
     foreach item $lst {
 
       label $swms.title${cnt1}0 -text "$item" -width 10 -anchor w -relief ridge

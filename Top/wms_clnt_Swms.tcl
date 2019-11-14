@@ -80,21 +80,34 @@ global wms
 proc Meas_SWMS {name join n} {
 global wms
 
-  SendCmdCOM meas aA $name
-  SendCmdCOM meas I$wms($name,swms,IntTime) $name
-  SendCmdCOM meas P$wms($name,swms,PixMode) $name
-  SendCmdCOM meas S $name
-  set wms($name,swms,Imeas,$n,$join) [lreplace [lreplace $wms($name,answ) 0 7] end-1 end]
-  set Iblack ""
-  foreach item {0 1 2 3 1038 1039 1040 1041 1042 1043} {
-    lappend Iblack [lindex $wms($name,swms,Imeas,$n,$join) $item]
+  if {$wms(active)} {
+    SendCmdCOM meas aA $name
+    SendCmdCOM meas I$wms($name,swms,IntTime) $name
+    SendCmdCOM meas P$wms($name,swms,PixMode) $name
+    SendCmdCOM meas S $name
+    set wms($name,swms,Imeas,$n,$join) [lreplace [lreplace $wms($name,answ) 0 7] end-1 end]
+
+    set Iblack ""
+    foreach item {0 1 2 3 1038 1039 1040 1041 1042 1043} {
+      lappend Iblack [lindex $wms($name,swms,Imeas,$n,$join) $item]
+    }
+
+    set wms($name,swms,Iblack) [lindex [lsort -increasing $Iblack] 5]
+    set wms($name,swms,Icalc,$n,$join) ""
+
+    foreach item $wms($name,swms,Imeas,$n,$join) {
+      lappend wms($name,swms,Icalc,$n,$join) [expr {$item - $wms($name,swms,Iblack)}]
+    }
+
+  } else {
+    set wms($name,swms,Imeas,$n,$join) {}
+    set wms($name,swms,Icalc,$n,$join) {}
+    foreach lamda $wms($name,swms,lamda) {
+      lappend wms($name,swms,Imeas,$n,$join) 1
+      lappend wms($name,swms,Icalc,$n,$join) 1
+    }
   }
 
-  set wms($name,swms,Iblack) [lindex [lsort -increasing $Iblack] 5]
-  set wms($name,swms,Icalc,$n,$join) ""
-  foreach item $wms($name,swms,Imeas,$n,$join) {
-    lappend wms($name,swms,Icalc,$n,$join) [expr {$item - $wms($name,swms,Iblack)}]
-  }
   if {!$wms($name,Io1) || !$wms($name,Io2)} {
     if {$wms($name,tr,current)<10 && $n==1 && $join==0} {
       foreach item $wms($name,swms,Icalc,$n,$join) lamda $wms($name,swms,lamda) {

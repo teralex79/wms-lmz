@@ -267,12 +267,7 @@ proc MeasWet {name join n} {
 global wms
 
   if {!$join || ($join==1 && $wms($name,Io1)) || ($join==2 && $wms($name,Io2))} {
-
-    if {$wms(active)} {
-      Meas_SWMS $name $join $n
-    } else {
-      incr wms($name,cont)
-    }
+    Meas_SWMS $name $join $n
   } else {
     incr wms($name,cont)
   }
@@ -348,7 +343,7 @@ global wms
     vwait wms($name,done)
   }
 
-  if {$wms(active)} {Meas_SWMS $name 1 k}
+  Meas_SWMS $name 1 k
 
   set wms($name,done) 0
   set wms($name,state,next) "Развести"
@@ -357,7 +352,7 @@ global wms
   if {!$wms($name,done)} {
     vwait wms($name,done)
   }
-  if {$wms(active)} {Meas_SWMS $name 0 k}
+  Meas_SWMS $name 0 k
 
   set cnt 0
   foreach lamda $wms($name,swms,lamda) {
