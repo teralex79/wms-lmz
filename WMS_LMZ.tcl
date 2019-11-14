@@ -177,4 +177,3 @@ Clocks
 Data
 
 TTContr
-#if {$wms(sm)} {runsm}
