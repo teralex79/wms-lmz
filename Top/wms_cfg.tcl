@@ -133,6 +133,7 @@ if {$hn == "td16003"} {
 
 foreach name {S01 S02} {
 
+  set wms($name,new_meth) 0
   set wms($name,adrDev) $adrDev
 
   set wms($name,swms,lamda) {}
