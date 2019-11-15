@@ -37,7 +37,7 @@ global wms
     fconfigure $s -buffering line
     fileevent $s readable [list handleSocketTT $s]
     SendSocketTT ConTT 0 0 0 0
-    after 1000 {set wms(Info) ""}
+    after 1000 FormInfo
   } else {
     set answ [tk_messageBox -message "Error $adr TT 4442\n Запустить TruTemp?" -title "Error $adr" -type yesno -icon error]
     if {$answ=="yes"} {
@@ -46,7 +46,7 @@ global wms
     } else {
       set wms(temp) 0
       SaveProp
-      after 1000 {set wms(Info) ""}
+      after 1000 FormInfo
     }
   }
 }
@@ -63,6 +63,8 @@ global wms
     set wms(temp) 0
 
     if {$wms(sph)} {Speech "Трю Темп -  отключен!" }
+    SaveProp; TTContr
+    FormInfo
     return
   }
 

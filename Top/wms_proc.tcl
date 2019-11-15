@@ -1090,6 +1090,18 @@ global wms
   update
 }
 
+proc FormInfo {} {
+global wms
+
+  set str ""
+  foreach item {active temp zndjntctr calculate} inf {Active Temp Joint_cntr Post_calc} {
+    if {$wms($item)} {
+      set str "${str}$inf; "
+    }
+  }
+  set wms(Info) $str
+}
+
 proc ExitPr {} {
 global rs wms
 

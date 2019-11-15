@@ -112,6 +112,13 @@ grid $zond -row 0 -column 1 -sticky nw
   button $fr.startlf.bt1 -text "Старт" -width 10 -command "StartMeas" -state disable
   label $fr.startlf.lb -textvar wms(mpoint)
   pack $fr.startlf.bt1 $fr.startlf.lb  -side top
+  incr row1
+
+#  labelframe $fr.inflf -text "Info"
+#  grid $fr.inflf -row $row1 -column $column -sticky nw -pady 5
+
+#  checkbutton $fr.inflf.led -variable wms(active)  -bg red -activeforeground green
+#  pack $fr.inflf.led
 
 set dat [frame .fr2]
 pack .fr2 -side bottom -anchor w
