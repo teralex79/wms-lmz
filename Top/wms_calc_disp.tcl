@@ -748,9 +748,38 @@ global calc wms
 ## Calculate Io
   if {$calc($name,new_meth)} {
     set i 0
+    set calc($name,Io) {}
     catch {global x${name}Spec2 y${name}Spec2}
     foreach lamda $calc($name,lamda) {
-      foreach item $calc($name,Io,cntlist) {
+      set Io 0
+      foreach pnt_Io $calc($name,Io,cntlist) {
+        set a4 [expr {1.*([lindex $calc($name,Iñâ1,1,$pnt_Io) $i] - [lindex $calc($name,Bcur,1,$pnt_Io) $i])}]
+        if {$a4<0} {set a4 0}
+        set Ref [lindex $calc($name,Ref,1,$pnt_Io) $i]
+        if {$Ref!=0} {set a4 [expr {1.*$a4/$Ref}]}
+        set Io1 $a4
+        if {!$calc($name,Io2)} {
+          set Io2 $Io1
+        } else {
+          set a5 [expr {1.*([lindex $calc($name,Iñâ2,2,$pnt_Io) $i] - [lindex $calc($name,Bcur,2,$pnt_Io) $i])}]
+          if {$a5<0} {set a5 0}
+          set Ref [lindex $calc($name,Ref,2,$pnt_Io) $i]
+          if {$Ref!=0} {set a5 [expr {1.*$a5/$Ref}]}
+          set Io2 $a5
+        }
+
+        set Io [expr {$Io + 1.*[lindex $calc($name,coef) $i]*($Io1 + $Io2)/2.}]
+      }
+      lappend calc($name,Io) [expr {(1.+$wms($name,corIo)/100.)*$Io/[llength $calc($name,Io,cntlist)]}]
+      incr i
+
+      set x${name}Spec2(++end) $lamda
+      set y${name}Spec2(++end) [lindex $calc($name,Io) end]
+    }
+    set calc($name,Io,cut) [lrange $calc($name,Io) $min $max]
+    if {$wms($name,type)=="swms"} {
+      if {$lrep1!="no" && $lrep2!="no"} {
+        set calc($name,Io,cut)  [lreplace $calc($name,Io,cut)  $lrep1 $lrep2]
       }
     }
   } elseif {$calc($name,Io1) || $calc($name,Io2)} {
