@@ -32,6 +32,10 @@ global rs wms
       }
     }
   }
+ } else {
+   catch {close $rs($name,adam)}
+   set a [lsearch $wms(port) "$wms($name,adr,moxa):$wms($name,port,adam)"]
+   set wms(port) [lreplace $wms(port) $a $a]
  }
 }
 
@@ -51,7 +55,6 @@ global wms ent
 
 proc ZondContrAdam {i name} {
 global ent rs wms
-
   if {$wms(zndjntctr)} {
     if {!$i || [expr {($i==1 && $wms($name,Io1)&& (($wms($name,new_meth) && $wms($name,tr,current)<2 ) || !$wms($name,new_meth))) || ($i==2 && $wms($name,Io2)&& (($wms($name,new_meth) && $wms($name,tr,current)<2 ) || !$wms($name,new_meth)))}]} {
 
@@ -60,20 +63,17 @@ global ent rs wms
       if {$i} {
 
         set wms(adam,ready) 0
-#        puts $rs($name,adam) \@${adr}DO00
-#        flush $rs($name,adam)
         SendCommandAdam $name act "\@${adr}DO00"
         if {!$wms(adam,ready)} {vwait wms(adam,ready)}
       } else {
 
         set wms(adam,ready) 0
-#        puts $rs($name,adam) \@${adr}DO01
-#        flush $rs($name,adam)
         SendCommandAdam $name act "\@${adr}DO01"
         if {!$wms(adam,ready)} {vwait wms(adam,ready)}
       }
 
-      after 1000 "CheckZond $name $adr 1 "
+      after 1000
+      CheckZond $name $adr 1
     } else {
 
        set wms($name,done) 1
@@ -85,10 +85,7 @@ global ent rs wms
 
 proc CheckZond {name adr rep} {
 global rs wms val ent
-
   set wms(adam,ready) 0
-#  puts $rs($name,adam) "\@${adr}DI"
-#  flush $rs($name,adam)
   SendCommandAdam $name check "\@${adr}DI"
   if {!$wms(adam,ready)} {vwait wms(adam,ready)}
   set pos [string range $ent(11) end-2 end-2]
@@ -109,7 +106,6 @@ global rs wms val ent
     set b "не разведен"
     set c "разведен"
   }
-
   if {[string range $ent(11) end end]} {
 
     set wms($name,state,current) $c
@@ -125,7 +121,6 @@ global rs wms val ent
     } else {
       set answ [tk_messageBox -message "Зонд $name $b. Повторить попытку?" -title "Error" -type yesno -icon error]
       if {$answ=="yes"} {
-
         CheckZond $name ${adr} 1
       } else {
 

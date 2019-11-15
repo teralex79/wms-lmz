@@ -1100,10 +1100,13 @@ global wms
     }
   }
   foreach name $wms(zond) {
-    RunAdam $name
-    runSWMS $name
     if {$wms($name,new_meth)} {
       set str "${str}NM_$name; "
+    }
+    foreach item {Io1 Io2} {
+      if {$wms($name,$item)} {
+        set str "${str}${item}_$name; "
+      }
     }
   }
   set wms(Info) $str

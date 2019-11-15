@@ -56,7 +56,15 @@ set m .menu.options
 menu $m -tearoff 0
 .menu add cascade -label "Опции" -menu $m -underline 0
 $m add command -label "Настройки" -command Properties -state disable
-$m add check -label Active -variable wms(active) -command "SaveProp; ReadIni"
+$m add check -label Active -variable wms(active) -command {
+
+  SaveProp
+  foreach name $wms(zond) {
+    RunAdam $name
+    runSWMS $name
+  }
+  ReadIni
+}
 $m add check -label "Измерение температуры" -variable wms(temp) -command "SaveProp; TTContr; ReadIni"
 $m add check -label "Контроль свед/разв" -variable wms(zndjntctr) -command "SaveProp; ReadIni"
 $m add check -label "Обработка" -variable wms(calculate) -command "SaveProp; ReadIni"
@@ -145,7 +153,7 @@ pack .fr2 -side bottom -anchor w
 ## Sozdanie polja info
 
   label $inf.infn -width 7 -text "Info:"
-  label $inf.inf -width 30 -textvariable wms(Info)
+  label $inf.inf -width 60 -textvariable wms(Info)
   pack $inf.infn $inf.inf -side left
 
 # Zapusk procedur obnovlenija dati i vremeni

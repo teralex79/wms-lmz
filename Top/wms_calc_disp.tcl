@@ -1214,7 +1214,11 @@ global c33 c41 a33 a41
           set s     [lindex $calc($name,s,cut) $k]
 
           set calc($name,IIo,$k) [expr {1.*$I/$Io_cor}]
-          set calc($name,G,$k)  [expr {log(1.*$Io_cor/$I)}]
+          if {[expr {$Io_cor*$I} > 0]} {
+            set calc($name,G,$k)  [expr {log(1.*$Io_cor/$I)}]
+          } else {
+            set calc($name,G,$k) 0
+          }
           set calc($name,Gs,$k) [expr {1.*$calc($name,G,$k)/pow($s,2)}]
         }
       }

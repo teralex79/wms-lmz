@@ -165,10 +165,6 @@ global wms
   } else {
 
     incr wms(pause,cnt)
-
-puts "wms(pause,cnt) $wms(pause,cnt)"
-puts "wms(zond) $wms(zond)"
-puts "wms(finmeas) $wms(finmeas)"
     if {$wms(pause,cnt)==[expr {[llength $wms(zond)] - $wms(finmeas)}]} {
       ConfPause 1
     }

@@ -25,6 +25,7 @@ global wms
       update
       if {![catch {set s [socket $adr_item 4442]}]} {
         set flag 1
+        set wms(adr_tt) $adr_item
         set wms(Info) "Connected TT to $adr_item"
         update
         break

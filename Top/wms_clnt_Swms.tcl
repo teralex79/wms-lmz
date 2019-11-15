@@ -231,15 +231,15 @@ global wms
       incr cnt
     }
     if {$name == "S01"} {
-      set l0 200.9117347
-      set l1 0.793296895
-      set l2 -2.66441E-05
-      set l3 -7.53605E-09
+      set wms($name,swms,l0) 200.9117347
+      set wms($name,swms,l1) 0.793296895
+      set wms($name,swms,l2) -2.66441E-05
+      set wms($name,swms,l3) -7.53605E-09
     } else {
-      set l0 199.0935683
-      set l1 0.804959717
-      set l2 -2.79977E-05
-      set l3 -5.45850E-09
+      set wms($name,swms,l0) 199.0935683
+      set wms($name,swms,l1) 0.804959717
+      set wms($name,swms,l2) -2.79977E-05
+      set wms($name,swms,l3) -5.45850E-09
     }
     set wms($name,swms,lamda) ""
     for {set i 0} {$i<1044} {incr i} {
@@ -247,6 +247,9 @@ global wms
       lappend wms($name,swms,lamda) $lmd1
 #      incr lmd1 766
     }
+    catch {close $wms($name,socket,swms)}
+    set a [lsearch $wms(port) "$wms($name,adr,moxa):$wms($name,port,swms)"]
+    set wms(port) [lreplace $wms(port) $a $a]
   }
 }
 
