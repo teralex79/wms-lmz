@@ -29,8 +29,11 @@ global wms
   puts $log ""
   puts $log ""
 
-  puts -nonewline $log "Join=$wms($name,Io1)$wms($name,Io2) (Io1,Io2); "
   puts -nonewline $log "NewMeth=$wms($name,new_meth); "
+  puts $log ""
+  puts $log ""
+
+  puts -nonewline $log "Join=$wms($name,Io1)$wms($name,Io2) (Io1,Io2); "
   puts -nonewline $log "L(μμ)=$wms($name,L); "
   puts -nonewline $log "repeat=$wms(repeat); "
   puts -nonewline $log "PixMode=$wms($name,swms,PixMode); "
@@ -63,9 +66,9 @@ global wms
     puts -nonewline $log "[format "%8s" RadP(T)]"
   }
   puts -nonewline $log "[format "%7s" Dens]"
-	puts -nonewline $log "[format "%5s" Join]"
-	puts -nonewline $log "[format "%7s" Type]"
-	puts -nonewline $log "[format "%7s" T,C]"
+  puts -nonewline $log "[format "%5s" Join]"
+  puts -nonewline $log "[format "%7s" Type]"
+  puts -nonewline $log "[format "%7s" T,C]"
 
   foreach lamda $wms($name,swms,lamda) {
     puts -nonewline $log "[format "%8d" $lamda]"
