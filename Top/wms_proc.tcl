@@ -1099,6 +1099,13 @@ global wms
       set str "${str}$inf; "
     }
   }
+  foreach name $wms(zond) {
+    RunAdam $name
+    runSWMS $name
+    if {$wms($name,new_meth)} {
+      set str "${str}NM_$name; "
+    }
+  }
   set wms(Info) $str
 }
 

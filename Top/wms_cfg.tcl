@@ -125,7 +125,7 @@ set wms(tt_adr_list) {localhost 192.168.0.101 192.168.0.102 192.168.0.103}
 if {$hn == "td16003"} {
   set wms(adr_tt) "192.168.0.101"
 } elseif {$hn == "td15003"} {
-  set wms(adr_tt) "192.168.0.102"
+  set wms(adr_tt) "192.168.0.101"
 } elseif {$hn == "tn12001"} {
   set wms(adr_tt) "192.168.0.101"
 } else {

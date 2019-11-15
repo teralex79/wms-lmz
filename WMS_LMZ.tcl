@@ -57,8 +57,8 @@ menu $m -tearoff 0
 .menu add cascade -label "Опции" -menu $m -underline 0
 $m add command -label "Настройки" -command Properties -state disable
 $m add check -label Active -variable wms(active) -command "SaveProp; ReadIni"
-$m add check -label "Измерение температуры" -variable wms(temp) -command "SaveProp; TTContr"
-$m add check -label "Контроль свед/разв" -variable wms(zndjntctr) -command "SaveProp"
+$m add check -label "Измерение температуры" -variable wms(temp) -command "SaveProp; TTContr; ReadIni"
+$m add check -label "Контроль свед/разв" -variable wms(zndjntctr) -command "SaveProp; ReadIni"
 $m add check -label "Обработка" -variable wms(calculate) -command "SaveProp; ReadIni"
 
 . configure -menu .menu

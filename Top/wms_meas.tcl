@@ -53,7 +53,11 @@ global wms meas
 
   set wms(startmeas) 1
   foreach name $wms(zond) {
-    after 50 MoveZond $name
+    if {$wms($name,points) != "finish"} {
+      after 50 MoveZond $name
+    } else {
+      incr wms(finmeas)
+    }
   }
 }
 
@@ -161,6 +165,10 @@ global wms
   } else {
 
     incr wms(pause,cnt)
+
+puts "wms(pause,cnt) $wms(pause,cnt)"
+puts "wms(zond) $wms(zond)"
+puts "wms(finmeas) $wms(finmeas)"
     if {$wms(pause,cnt)==[expr {[llength $wms(zond)] - $wms(finmeas)}]} {
       ConfPause 1
     }

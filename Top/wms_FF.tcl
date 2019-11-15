@@ -65,7 +65,7 @@ global wms
 
           if {![info exists wms($name,coef,$lamda)]} {
 
-            set wms($name,coef,$lamda) 1
+            set wms($name,coef,$lamda) 1.
           }
           puts -nonewline $log [format "%8.4f" $wms($name,coef,$lamda)]
           puts -nonewline $of [format "%8.4f" $wms($name,coef,$lamda)]

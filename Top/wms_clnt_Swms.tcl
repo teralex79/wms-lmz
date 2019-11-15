@@ -130,6 +130,10 @@ global wms
     if {$n!="k"} {
 #      if {!$wms($name,new_meth) || ($wms($name,tr,current)<10 && $n==1)} {
         foreach item $wms($name,swms,Icalc,$n,$join) lamda $wms($name,swms,lamda) {
+          if {![info exists wms($name,coef,$lamda)]} {
+
+            set wms($name,coef,$lamda) 1
+          }
           set wms($name,$lamda,Io) [expr {$item*$wms($name,coef,$lamda)}]
         }
 #      }
@@ -221,15 +225,27 @@ global wms
       }
     }
   } else {
-    set lmd1 200000
-    foreach item {SName l0 l1 l2 l3 slc nlcc0 nlcc1 nlcc2 nlcc3 nlcc4 nlcc5 nlcc6 nlcc7 pnlc} {
+#    set lmd1 200000
+    foreach item {SName slc nlcc0 nlcc1 nlcc2 nlcc3 nlcc4 nlcc5 nlcc6 nlcc7 pnlc} {
       set wms($name,swms,$item) "no_act"
       incr cnt
     }
+    if {$name == "S01"} {
+      set l0 200.9117347
+      set l1 0.793296895
+      set l2 -2.66441E-05
+      set l3 -7.53605E-09
+    } else {
+      set l0 199.0935683
+      set l1 0.804959717
+      set l2 -2.79977E-05
+      set l3 -5.45850E-09
+    }
     set wms($name,swms,lamda) ""
     for {set i 0} {$i<1044} {incr i} {
+      set lmd1 [expr {round(1000*($wms($name,swms,l0) + $wms($name,swms,l1)*$i + $wms($name,swms,l2)*$i*$i + $wms($name,swms,l3)*$i*$i*$i))}]
       lappend wms($name,swms,lamda) $lmd1
-      incr lmd1 766
+#      incr lmd1 766
     }
   }
 }
