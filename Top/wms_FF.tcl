@@ -29,15 +29,14 @@ global wms
           puts -nonewline $log [format "%4s" $name]
           puts -nonewline $log [format "%7s" $wms($name,type)]
           puts -nonewline $log [format "%7s" $type]
-          if {!$wms(active)} {
-            set wms($name,swms,Imeas,k,$join) {}
-            foreach lamda $wms($name,swms,lamda) {
 
-              lappend wms($name,swms,Imeas,k,$join) 1
-            }
-          }
           foreach item $wms($name,swms,Imeas,k,$join) {
-            puts -nonewline $log [format "%8d" $item]
+
+            if {!$wms(active)} {
+              puts -nonewline $log [format "%8.1f" $item]
+            } else {
+              puts -nonewline $log [format "%8d" $item]
+            }
           }
           puts $log ""
         }
