@@ -1,9 +1,9 @@
 ## Функции рассчета r32 и влажности по измеренным данным.
 
 ### Так же графический интерфейс и доп. процедуры для возможности постобработки, путем выбора файла или папки с файлами с измеренными данными.
-### Для запуска режима постобработки файл запускается с аргументом, напр. "1"
+### Для запуска режима постобработки файл запускается с аргументом, напр. "1" (Уже не актуально, можно запускать без аргументов)
 
-if {$argc>0} {
+if {$argc>0 || ([info exists ::argv0] && $::argv0 eq [info script])} {
   set wms(top) 1
   set wms(unimod) 1
   console show
@@ -24,7 +24,7 @@ if {$wms(top)} {
 
   wm geometry . "=+300+150"
 
-  foreach name {S01 S04 S05 S07} {
+  foreach name {S01 S02 S04 S05 S07} {
     set wms($name,l,uv) 250000
     set wms($name,l,ir) 930000
     set wms($name,npoints) 100
@@ -34,34 +34,37 @@ if {$wms(top)} {
   }
 
   set wms(S01,RWI) 589
+  set wms(S02,RWI) 589
   set wms(S04,RWI) 739.4
   set wms(S05,RWI) 702.5
   set wms(S07,RWI) 700.5
 
   set wms(S01,RTI) 568
+  set wms(S02,RTI) 568
   set wms(S04,RTI) 705
   set wms(S05,RTI) 669
   set wms(S07,RTI) 669
 
   set wms(S01,RC) 364
+  set wms(S02,RC) 364
   set wms(S04,RC) 455
   set wms(S05,RC) 617
   set wms(S07,RC) 617
 
   set wms(S01,RH) 271
+  set wms(S02,RH) 271
   set wms(S04,RH) 273
   set wms(S05,RH) 270
   set wms(S07,RH) 270
 
   set wms(S01,ALFAI) -5
+  set wms(S02,ALFAI) -5
   set wms(S04,ALFAI) -39
   set wms(S05,ALFAI) -28
   set wms(S07,ALFAI) -45
 
   set wms(tolerance) 5
-#  set wms(calibr) 2
   set wms(calibr) 7
-#  set wms(calibr) 1
 
   frame .fr
   pack .fr
@@ -127,58 +130,6 @@ global calc wms
 
   set file [tk_getOpenFile -initialfile $infile -filetypes $types -parent . -initialdir $w]
   OpenFile $file
-}
-
-proc OpenFile {file} {
-global calc wms
-
-  if {[llength $file]} {
-## Sohranenie poslednego vvedennogo puti
-
-    .fr.bt configure -state disable
-    .fr.bt2 configure -state disable
-
-    set path [split [lindex $file 0] "\\/"]
-    set path2 ""
-    for {set i 0} {$i<[expr {[llength $path]-1}]} {incr i} {
-      set path2 "${path2}[lindex $path $i]/"
-    }
-    set path2 "[string range ${path2} 0 end-1]"
-
-    set calc(initialdir) $path2
-    set name [lindex [split [lindex $path end] "_."] 0]
-    set wms($name,type) [lindex [split [lindex $path end] "_."] 1]
-
-    set cnt 0
-    foreach nm {S01 S04 S05 S07} {
-      if {$nm==$name} {incr cnt}
-    }
-    foreach type {swms nwms test txt} {
-      if {$type==$wms($name,type)} {incr cnt}
-    }
-    if {$cnt==2} {
-      set of [open [info hostname]_unimod.ini w]
-      puts $of "calc(initialdir) $path2"
-      foreach nm {S01 S04 S05 S07} {
-        puts $of "wms($nm,l,uv)    $wms($nm,l,uv)   "
-        puts $of "wms($nm,l,ir)    $wms($nm,l,ir)   "
-        puts $of "wms($nm,npoints) $wms($nm,npoints)"
-      }
-      close $of
-      FormOldWMS   $name $path2
-      if {$wms(unimod)} {ReadRAW_Disp $name $path2}
-      if {$wms(top)} {
-        .fr.bt configure -state active -text "OpenFile"
-        .fr.bt2 configure -state active -text "OpenDir"
-      }
-    } else {
-      .fr.bt configure -state active
-      .fr.bt2 configure -state active
-    }
-  } else {
-    .fr.bt configure -state active
-    .fr.bt2 configure -state active
-  }
 }
 
 proc DirDialog {} {
@@ -252,6 +203,58 @@ global wms
   }
 }
 
+proc OpenFile {file} {
+global calc wms
+
+  if {[llength $file]} {
+## Sohranenie poslednego vvedennogo puti
+
+    .fr.bt configure -state disable
+    .fr.bt2 configure -state disable
+
+    set path [split [lindex $file 0] "\\/"]
+    set path2 ""
+    for {set i 0} {$i<[expr {[llength $path]-1}]} {incr i} {
+      set path2 "${path2}[lindex $path $i]/"
+    }
+    set path2 "[string range ${path2} 0 end-1]"
+
+    set calc(initialdir) $path2
+    set name [lindex [split [lindex $path end] "_."] 0]
+    set wms($name,type) [lindex [split [lindex $path end] "_."] 1]
+
+    set cnt 0
+    foreach nm {S01 S02 S04 S05 S07} {
+      if {$nm==$name} {incr cnt}
+    }
+    foreach type {swms nwms test txt} {
+      if {$type==$wms($name,type)} {incr cnt}
+    }
+    if {$cnt==2} {
+      set of [open [info hostname]_unimod.ini w]
+      puts $of "calc(initialdir) $path2"
+      foreach nm {S01 S02 S04 S05 S07} {
+        puts $of "wms($nm,l,uv)    $wms($nm,l,uv)   "
+        puts $of "wms($nm,l,ir)    $wms($nm,l,ir)   "
+        puts $of "wms($nm,npoints) $wms($nm,npoints)"
+      }
+      close $of
+      FormOldWMS $name $path2
+      if {$wms(unimod)} {ReadRAW_Disp $name $path2}
+      if {$wms(top)} {
+        .fr.bt configure -state active -text "OpenFile"
+        .fr.bt2 configure -state active -text "OpenDir"
+      }
+    } else {
+      .fr.bt configure -state active
+      .fr.bt2 configure -state active
+    }
+  } else {
+    .fr.bt configure -state active
+    .fr.bt2 configure -state active
+  }
+}
+
 proc ReadK2 {} {
 global calc
 
@@ -261,7 +264,13 @@ global calc
   set calc(hk33) {}
   set calc(hk41) {}
 
-  set file "K2.txt"
+#Find current path
+  set Current_Dir [pwd]
+
+# Replace (in the Current_Dir in variable Current_Dir) every instance of "/Top" which is a word by itself with "" (actualy remove "/Top" if exist):
+  regsub -all {\/Top} $Current_Dir "" Current_Dir
+
+  set file "${Current_Dir}/Data/Config/K2.txt"
   set of [open $file]
   set data [read $of]
   close $of
@@ -282,7 +291,7 @@ global calc
 proc ChooseRange {name} {
 global calc wms
 
-  foreach nm {S01 S04 S05 S07} {
+  foreach nm {S01 S02 S04 S05 S07} {
     catch {destroy .grph$nm}
   }
 
@@ -293,6 +302,7 @@ global calc wms
   set tnb [blt::tabnotebook .grph$name.nb -takefocus 1 -samewidth no]
   pack $tnb -expand yes -fill both
   set tab 0
+#Creating window with charts
   foreach tb {I_Io Spec2 Calc} {
     catch {$tnb delete $tab; destroy $tnb.c${name}}
     switch $tb {
@@ -405,6 +415,7 @@ global calc wms
     }
     incr tab
   }
+#Creating window with parametrs for calculation
   if {!$wms(dd)} {
     toplevel .param
     wm title .param "Parameters"
@@ -433,7 +444,7 @@ global calc wms
       global a
       set off [open [info hostname]_unimod.ini w]
       puts $off "calc(initialdir) $calc(initialdir)"
-      foreach name {S01 S04 S05 S07} {
+      foreach name {S01 S02 S04 S05 S07} {
         puts $off "wms($name,l,uv)    $wms($name,l,uv)   "
         puts $off "wms($name,l,ir)    $wms($name,l,ir)   "
         puts $off "wms($name,npoints) $wms($name,npoints)"
@@ -449,6 +460,7 @@ global calc wms
   }
 }
 
+# Reading RAW file
 proc ReadRAW_Disp {name file} {
 global calc wms
 
@@ -467,13 +479,17 @@ global calc wms
   set pnt  0
   set cnt3 0
   set flag 0
+  set New_method 0
   set pi [expr {acos(-1)}]
 
   set calc($name,tr) {}
+  set calc($name,new_meth) 0
 
   foreach str $lines {
     if {[llength $str]>0} {
       if {!$flag} {
+
+## Read coefficients and initial parameters
         if {$line==0} {
           set s [split $str " :;"]
           if {$wms($name,type)=="txt"} {set wms($name,type) [lindex $s end-1]}
@@ -489,6 +505,10 @@ global calc wms
           set b [lindex [split [lindex $str 0] =] 1]
           set calc($name,Io1) [string range $b 0 0]
           set calc($name,Io2) [string range $b end end]
+        }
+        if {[lsearch $str "NewMeth=*"]!=-1} {
+          set b [lindex [split [lindex $str 0] =] 1]
+          set calc($name,new_meth) [string range $b 0 0]
         }
         if {[lsearch $str "L(мм)=*"]!=-1} {
           set b [split $str ";"]
@@ -539,12 +559,14 @@ global calc wms
 
           if {$wms($name,type)=="swms" || $wms($name,type)=="test"} {
             if {$wms(top)} {
+## If calculation is executed as separate program then additional windows with charts and limitation and correction parameters open
               ChooseRange $name
             }
             update
-
+# Limit the spectrum by lamda start
             set cnt4 0
             set flag2 0
+# Fix indexes for min and max lamda
             foreach item $calc($name,lamda) {
               if {$flag2==0 && $item>=$wms($name,l,uv)} {
      #uv
@@ -560,6 +582,8 @@ global calc wms
               incr cnt4
             }
           }
+
+## Add points for averaging
           if {$wms($name,type)=="swms" || $wms($name,type)=="test"} {
             set calc(aver) 11
             set min [expr {$min-$calc(aver)}]
@@ -570,10 +594,12 @@ global calc wms
             set aver 0
           }
 
+# Limit spectrum
           set calc($name,coef,cut)  [lrange $calc($name,coef)  $min $max]
           set calc($name,lamda,cut) [lrange $calc($name,lamda) $min $max]
           set calc($name,s,cut)     [lrange $calc($name,s)     $min $max]
 
+# Cut an overload peak from the spectrum
           if {$wms($name,type)=="swms"} {
             set cnt4 0
             set flag2 0
@@ -599,7 +625,7 @@ global calc wms
               set calc($name,s,cut)     [lreplace $calc($name,s,cut)     $lrep1 $lrep2]
             }
           }
-
+# Reduce number of points for calculating
           set step [format "%2.0f" [expr {1.*([llength $calc($name,lamda,cut)] - $aver - 1)/$wms($name,npoints)}]]
           if {$step<1} {set step 1}
           set cut {}
@@ -615,6 +641,7 @@ global calc wms
           set calc($name,red,index) -1
           set calc($name,blu,index) -1
 
+# Find indexes of the nearest blue and red wavelengths for old 2-wave method
           if {[llength $calc($name,lamda,cutnmb)]<11} {
             set d 40000
           } elseif {[llength $calc($name,lamda,cutnmb)]<200} {
@@ -655,13 +682,16 @@ global calc wms
         }
         incr line
       } else {
+#Read Data
 
+#Calculate the number of rows for one measurement point depending on the method
         if {$cnt3==[expr {3+3*$calc($name,Io1)+3*$calc($name,Io2)}]} {
           incr pnt
           set cnt3 0
         }
 
         if {$cnt3==0} {
+#If it is first string of meas point set its parameters
           set calc($name,time,$pnt) [lindex $str 0]
           set calc($name,N,$pnt)    [lindex $str $indxN]
           set calc($name,X,$pnt)    [lindex $str $indxX]
@@ -670,6 +700,7 @@ global calc wms
           set calc($name,T,$pnt)    [lindex $str $indxT]
 
           lappend calc($name,tr) $calc($name,X,$pnt)
+#
           if {$calc($name,X,$pnt)<2} {lappend calc($name,Io,cntlist) $pnt}
         }
         set Join [lindex $str $indxJ]
@@ -715,7 +746,43 @@ global calc wms
 
   set calc($name,points) $pnt
 ## Calculate Io
-  if {$calc($name,Io1) || $calc($name,Io2)} {
+  if {$calc($name,new_meth)} {
+    set i 0
+    set calc($name,Io) {}
+    catch {global x${name}Spec2 y${name}Spec2}
+    foreach lamda $calc($name,lamda) {
+      set Io 0
+      foreach pnt_Io $calc($name,Io,cntlist) {
+        set a4 [expr {1.*([lindex $calc($name,Iсв1,1,$pnt_Io) $i] - [lindex $calc($name,Bcur,1,$pnt_Io) $i])}]
+        if {$a4<0} {set a4 0}
+        set Ref [lindex $calc($name,Ref,1,$pnt_Io) $i]
+        if {$Ref!=0} {set a4 [expr {1.*$a4/$Ref}]}
+        set Io1 $a4
+        if {!$calc($name,Io2)} {
+          set Io2 $Io1
+        } else {
+          set a5 [expr {1.*([lindex $calc($name,Iсв2,2,$pnt_Io) $i] - [lindex $calc($name,Bcur,2,$pnt_Io) $i])}]
+          if {$a5<0} {set a5 0}
+          set Ref [lindex $calc($name,Ref,2,$pnt_Io) $i]
+          if {$Ref!=0} {set a5 [expr {1.*$a5/$Ref}]}
+          set Io2 $a5
+        }
+
+        set Io [expr {$Io + 1.*[lindex $calc($name,coef) $i]*($Io1 + $Io2)/2.}]
+      }
+      lappend calc($name,Io) [expr {(1.+$wms($name,corIo)/100.)*$Io/[llength $calc($name,Io,cntlist)]}]
+      incr i
+
+      set x${name}Spec2(++end) $lamda
+      set y${name}Spec2(++end) [lindex $calc($name,Io) end]
+    }
+    set calc($name,Io,cut) [lrange $calc($name,Io) $min $max]
+    if {$wms($name,type)=="swms"} {
+      if {$lrep1!="no" && $lrep2!="no"} {
+        set calc($name,Io,cut)  [lreplace $calc($name,Io,cut)  $lrep1 $lrep2]
+      }
+    }
+  } elseif {$calc($name,Io1) || $calc($name,Io2)} {
     for {set pnt 0} {$pnt<=$calc($name,points)} {incr pnt} {
       set calc($name,Io,$pnt) {}
       set i 0
@@ -764,7 +831,7 @@ global calc wms
       lappend calc($name,Io) [expr {(1.+$wms($name,corIo)/100.)*$Io/[llength $calc($name,Io,cntlist)]}]
       incr i
 
-      set x${name}Spec2(++end) [expr {$lamda}]
+      set x${name}Spec2(++end) $lamda
       set y${name}Spec2(++end) [lindex $calc($name,Io) end]
     }
     set calc($name,Io,cut) [lrange $calc($name,Io) $min $max]
@@ -811,9 +878,6 @@ global c33 c41 a33 a41
   }
   set s_UV [lindex $calc($name,s,decr)   0]
   set s_IR [lindex $calc($name,s,decr) end]
-
-#  set s_UV [lindex [lsort -decreasing $calc($name,s,cut)]   1]
-#  set s_IR [lindex [lsort -decreasing $calc($name,s,cut)] end]
 
   set of3 [open $file/${name}_Gs.txt "w"]
   puts -nonewline $of3 "Дата: ${date}; "
@@ -1047,7 +1111,7 @@ global c33 c41 a33 a41
         set Ref_aver 0
 
         for {set i [expr {$k-$aver}]} {$i<=[expr {$k+$aver}]} {incr i} {
-          if {!$calc($name,Io1) && !$calc($name,Io2)} {
+          if {(!$calc($name,Io1) && !$calc($name,Io2)) || $calc($name,new_meth)} {
             set Io  [lindex $calc($name,Io,cut) $i]
           } else {
             set Io  [lindex $calc($name,Io,$pnt,cut) $i]
@@ -1122,7 +1186,7 @@ global c33 c41 a33 a41
           set Ref_aver 0
 
           for {set i [expr {$k-$aver}]} {$i<=[expr {$k+$aver}]} {incr i} {
-            if {!$calc($name,Io1) && !$calc($name,Io2)} {
+            if {(!$calc($name,Io1) && !$calc($name,Io2)) || $calc($name,new_meth)} {
               set Io  [lindex $calc($name,Io,cut) $i]
             } else {
               set Io  [lindex $calc($name,Io,$pnt,cut) $i]
@@ -1150,7 +1214,11 @@ global c33 c41 a33 a41
           set s     [lindex $calc($name,s,cut) $k]
 
           set calc($name,IIo,$k) [expr {1.*$I/$Io_cor}]
-          set calc($name,G,$k)  [expr {log(1.*$Io_cor/$I)}]
+          if {[expr {$Io_cor*$I} > 0]} {
+            set calc($name,G,$k)  [expr {log(1.*$Io_cor/$I)}]
+          } else {
+            set calc($name,G,$k) 0
+          }
           set calc($name,Gs,$k) [expr {1.*$calc($name,G,$k)/pow($s,2)}]
         }
       }
@@ -1864,8 +1932,7 @@ global wms mff
   } else {
     set fn ${name}_$wms($name,type)
   }
-#  .fr.bt2 configure -text ${fn}
-#  update
+
   set of [open "$file/${fn}.txt"]
   set data [read $of]
   close $of
@@ -1876,6 +1943,7 @@ global wms mff
   set cnt 0
   set cnt3 0
   set reads 1
+  set mff($name,new_meth) 0
 
   foreach str $lines {
     if {[llength $str]>0} {
@@ -1902,6 +1970,10 @@ global wms mff
           set b [lindex [split [lindex $str 0] =] 1]
           set mff($name,Io1) [string range $b 0 0]
           set mff($name,Io2) [string range $b end end]
+        }
+        if {[lsearch $str "NewMeth=*"]!=-1} {
+          set b [lindex [split [lindex $str 0] =] 1]
+          set mff($name,new_meth) [string range $b 0 0]
         }
         if {[lsearch $str "L(мм)=*"]!=-1} {
           set b [split $str ";"]
@@ -1985,7 +2057,7 @@ global wms mff
           set mff($name,temp,$reads) [lindex $str 8]
           set mff(x,$reads) [lindex $str 3]
           set mff(y,$reads) [lindex $str 4]
-          if {$mff(x,$reads)<5} {
+          if {$mff(x,$reads)<2} {
 
             lappend mff($name,Io,cntlist) $reads
           }
@@ -2029,8 +2101,40 @@ global wms mff
   for {set reads 1} {$reads<=$mff(end)} {incr reads} {
 
 ## Calculate Io
+    if {$mff($name,new_meth)} {
+      set i 0
+      foreach lamda $mff($name,lamda) {
+        set cnt 1
+        foreach rds "[lindex $mff($name,Io,cntlist) 0] [lindex $mff($name,Io,cntlist) end]" {
 
-    if {$mff($name,Io1) || $mff($name,Io2)} {
+          set a4 [expr {1.*([lindex $mff($name,Iсв1,1,$rds) $i] - [lindex $mff($name,Bcur,1,$rds) $i])}]
+          set Ref [expr {1.*([lindex $mff($name,Ref,1,$rds) $i] - [lindex $mff($name,Bcur,1,$rds) $i])}]
+          if {$Ref!=0} {set a4 [expr {$a4/$Ref}]}
+          set Io1 [expr {[lindex $mff($name,coef) $i]*$a4}]
+
+          if {$mff($name,Io2)} {
+            set a5 [expr {1.*([lindex $mff($name,Iсв2,2,$rds) $i] - [lindex $mff($name,Bcur,2,$rds) $i])}]
+            set Ref [expr {1.*([lindex $mff($name,Ref,2,$rds) $i] - [lindex $mff($name,Bcur,2,$rds) $i])}]
+            if {$Ref!=0} {set a5 [expr {$a5/$Ref}]}
+            set Io2 [expr {[lindex $mff($name,coef) $i]*$a5}]
+          } else {
+            set Io2 $Io1
+          }
+
+          set Io [expr {($Io2 + $Io1)/2.}]
+
+          if {$cnt==1} {
+            set Io_1 $Io
+          } else {
+            set Io_2 $Io
+          }
+          incr cnt
+        }
+        lappend mff($name,Io_1) $Io_1
+        lappend mff($name,Io_2) $Io_2
+        incr i
+      }
+    } elseif {$mff($name,Io1) || $mff($name,Io2) } {
       set i 0
       foreach lamda $mff($name,lamda) {
         if {!$mff($name,Io1)} {
@@ -2058,31 +2162,24 @@ global wms mff
         incr i
       }
     } else {
-
-      set mff($name,Io) {}
       set mff($name,Io_1) {}
       set mff($name,Io_2) {}
       set i 0
       foreach lamda $mff($name,lamda) {
-        set Io 0
         set cnt 1
-        foreach rds $mff($name,Io,cntlist) {
+        foreach rds "[lindex $mff($name,Io,cntlist) 0] [lindex $mff($name,Io,cntlist) end]" {
           set a2 [expr {[lindex $mff($name,Iразв,0,$rds) $i] - [lindex $mff($name,Bcur,0,$rds) $i]}]
           set Ref [lindex $mff($name,Ref,0,$rds) $i]
           if {$Ref!=0} {set a2 [expr {1.*$a2/$Ref}]}
-          set Io [expr {$Io + $a2}]
-update
           if {$cnt==1} {
             set Io_1 $a2
-          } elseif  {$cnt==[llength $mff($name,Io,cntlist)]} {
+          } else {
             set Io_2 $a2
           }
-          if {[llength $mff($name,Io,cntlist)]==1} {set Io_2 $Io_1}
           incr cnt
         }
         lappend mff($name,Io_1) $Io_1
         lappend mff($name,Io_2) $Io_2
-        lappend mff($name,Io) [expr {1.*$Io/[llength $mff($name,Io,cntlist)]}]
         incr i
       }
     }
@@ -2105,17 +2202,13 @@ update
     set mff(I_blu,$reads)   [lindex $mff($name,I,$reads) $blu]
     set mff(I_red,$reads)   [lindex $mff($name,I,$reads) $red]
 
-    if {$mff($name,Io1) || $mff($name,Io2)} {
+    if {($mff($name,Io1) || $mff($name,Io2)) && !$mff($name,new_meth)} {
       set mff(I_blu01,$reads) [lindex $mff($name,Io1,$reads) $blu]
       set mff(I_blu02,$reads) [lindex $mff($name,Io2,$reads) $blu]
       set mff(I_red01,$reads) [lindex $mff($name,Io1,$reads) $red]
       set mff(I_red02,$reads) [lindex $mff($name,Io2,$reads) $red]
     } else {
 
-#      set mff(I_blu01,$reads) [lindex $mff($name,Io) $blu]
-#      set mff(I_blu02,$reads) [lindex $mff($name,Io) $blu]
-#      set mff(I_red01,$reads) [lindex $mff($name,Io) $red]
-#      set mff(I_red02,$reads) [lindex $mff($name,Io) $red]
       set mff(I_blu01,$reads) [lindex $mff($name,Io_1) $blu]
       set mff(I_blu02,$reads) [lindex $mff($name,Io_2) $blu]
       set mff(I_red01,$reads) [lindex $mff($name,Io_1) $red]

@@ -1,9 +1,9 @@
-set wms(console) 0
+set wms(console) 1
 if {$wms(console)} {
   console show
 }
 
-set wms(active) 1
+set wms(active) 0
 set wms(temp) 0
 set wms(zndjntctr) 0
 
@@ -119,10 +119,15 @@ set cnt 0
 set adrDev 1
 
 set hn [info hostname]
+
+set wms(tt_adr_list) {localhost 192.168.0.101 192.168.0.102 192.168.0.103}
+
 if {$hn == "td16003"} {
   set wms(adr_tt) "192.168.0.101"
 } elseif {$hn == "td15003"} {
-  set wms(adr_tt) "192.168.0.102"
+  set wms(adr_tt) "192.168.0.101"
+} elseif {$hn == "tn12001"} {
+  set wms(adr_tt) "192.168.0.101"
 } else {
   set wms(adr_tt) "localhost"
 }
@@ -130,6 +135,7 @@ if {$hn == "td16003"} {
 
 foreach name {S01 S02} {
 
+  set wms($name,new_meth) 0
   set wms($name,adrDev) $adrDev
 
   set wms($name,swms,lamda) {}

@@ -16,6 +16,7 @@ global wms meas
       incr i
     }
   }
+  FormInfo
 }
 
 proc ReadCoef {name} {

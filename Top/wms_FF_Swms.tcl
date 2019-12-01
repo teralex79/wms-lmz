@@ -29,6 +29,10 @@ global wms
   puts $log ""
   puts $log ""
 
+  puts -nonewline $log "NewMeth=$wms($name,new_meth); "
+  puts $log ""
+  puts $log ""
+
   puts -nonewline $log "Join=$wms($name,Io1)$wms($name,Io2) (Io1,Io2); "
   puts -nonewline $log "L(μμ)=$wms($name,L); "
   puts -nonewline $log "repeat=$wms(repeat); "
@@ -62,9 +66,9 @@ global wms
     puts -nonewline $log "[format "%8s" RadP(T)]"
   }
   puts -nonewline $log "[format "%7s" Dens]"
-	puts -nonewline $log "[format "%5s" Join]"
-	puts -nonewline $log "[format "%7s" Type]"
-	puts -nonewline $log "[format "%7s" T,C]"
+  puts -nonewline $log "[format "%5s" Join]"
+  puts -nonewline $log "[format "%7s" Type]"
+  puts -nonewline $log "[format "%7s" T,C]"
 
   foreach lamda $wms($name,swms,lamda) {
     puts -nonewline $log "[format "%8d" $lamda]"
@@ -136,13 +140,25 @@ global wms a
             }
           }
           default {
-            if {![info exists wms($name,swms,Imeas,$n,$join)]} {
+            if {$join && $wms($name,new_meth) && $wms($name,tr,current)>2} {
+
+              foreach meas $wms($name,swms,Ijn,$join) {
+                puts -nonewline $log "[format "%8.1f" $meas]"
+              }
+            } elseif {![info exists wms($name,swms,Imeas,$n,$join)]} {
               foreach lamda $wms($name,swms,lamda) {
                 puts -nonewline $log "[format "%8d" 1]"
               }
             } else {
               foreach meas $wms($name,swms,Imeas,$n,$join) {
-                puts -nonewline $log "[format "%8d" $meas]"
+                if {$wms(active)} {
+                  puts -nonewline $log "[format "%8d" $meas]"
+                } else {
+                  puts -nonewline $log "[format "%8.1f" $meas]"
+                }
+              }
+              if {$join && $wms($name,new_meth) && $wms($name,tr,current)<2} {
+                set wms($name,swms,Ijn,$join) $wms($name,swms,Imeas,$n,$join)
               }
             }
           }

@@ -1,8 +1,6 @@
 proc StartMeas {} {
 global wms meas
 
-  set wms(nwms,ready) 1
-
   foreach name $wms(zond) {
     if {$wms($name,firstpoint)==1} {
       set wms($name,head_file) 0
@@ -13,14 +11,6 @@ global wms meas
 
     set wms($name,smstat) "meas"
 
-    if {$wms($name,type)=="nwms"} {
-      set wms($name,colorlist) ""
-      foreach color $wms(colorlist) {
-        if {$meas($name,$color)} {
-          lappend wms($name,colorlist) $color
-        }
-      }
-    }
     set wms($name,busytemp) 0
   }
 
@@ -37,11 +27,9 @@ global wms meas
       set answ [tk_messageBox -message "Проверить, что зонд $name разведен?" -title "Question $name" -type yesno -icon question]
       if {$answ=="yes"} {
         set wms($name,done) 0
-        if {$wms($name,type)=="nwms"} {
-          CheckZondNWMS $name 0 0
-        } else {
-          CheckZond $name [format "%02X" $wms($name,adr,adam)] 0
-        }
+
+        CheckZond $name [format "%02X" $wms($name,adr,adam)] 0
+
         if {!$wms($name,done)} {
           vwait wms($name,done)
         }
@@ -65,7 +53,11 @@ global wms meas
 
   set wms(startmeas) 1
   foreach name $wms(zond) {
-    after 50 MoveZond $name
+    if {$wms($name,points) != "finish"} {
+      after 50 MoveZond $name
+    } else {
+      incr wms(finmeas)
+    }
   }
 }
 
@@ -144,7 +136,7 @@ global wms
 
     if {$wms($name,wet,$n) && !$wms($name,nowet)} {
       if {$join!=0} {
-        if {($join==1 && $wms($name,Io1)) || ($join==2 && $wms($name,Io2))} {
+        if {($join==1 && $wms($name,Io1) && (($wms($name,new_meth) && $wms($name,tr,current)<2 ) || !$wms($name,new_meth))) || ($join==2 && $wms($name,Io2) && (($wms($name,new_meth) && $wms($name,tr,current)<2 ) || !$wms($name,new_meth)))} {
 
           set wms($name,state,next) "Свести"
         }
@@ -266,8 +258,7 @@ global wms meas
 proc MeasWet {name join n} {
 global wms
 
-  if {!$join || ($join==1 && $wms($name,Io1)) || ($join==2 && $wms($name,Io2))} {
-
+  if {!$join || ($join==1 && $wms($name,Io1)&& (($wms($name,new_meth) && $wms($name,tr,current)<2 ) || !$wms($name,new_meth))) || ($join==2 && $wms($name,Io2)&& (($wms($name,new_meth) && $wms($name,tr,current)<2 ) || !$wms($name,new_meth)))} {
     Meas_SWMS $name $join $n
   } else {
     incr wms($name,cont)

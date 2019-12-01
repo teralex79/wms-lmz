@@ -410,7 +410,7 @@ global wms rs meas
 
     set cnt1 1
 
-    foreach item {L RWI RTI RC RH ALFAI TEMPA TEMPB TEMPC Io1 Io2 Type} {
+    foreach item {L RWI RTI RC RH ALFAI TEMPA TEMPB TEMPC Io1 Io2 Type "New method"} {
 
       label $zond.title${cnt1}0 -text "$item" -width 10 -anchor w
       grid $zond.title${cnt1}0 -row $cnt1 -column 0 -sticky nw
@@ -451,8 +451,12 @@ global wms rs meas
       set cnt2 1
 
       foreach name $wms(zond) {
-
-        checkbutton $zond.$cnt1$cnt2 -variable wms($name,$item) -width 6 -justify center  -relief ridge
+        if {$wms($name,new_meth) && $item == "Io1"} {
+          set st disable
+        } else {
+          set st active
+        }
+        checkbutton $zond.$cnt1$cnt2 -variable wms($name,$item) -width 6 -justify center -relief ridge -state $st
         grid $zond.$cnt1$cnt2 -row $cnt1 -column $cnt2  -sticky news
         incr cnt2
       }
@@ -469,6 +473,25 @@ global wms rs meas
     }
     incr cnt1
 
+    set cnt2 1
+
+    foreach name $wms(zond) {
+      checkbutton $zond.$cnt1$cnt2 -variable wms($name,new_meth) -width 6 -justify center -relief ridge -command {
+        set cnt2 1
+        foreach name $wms(zond) {
+          if {$wms($name,new_meth)} {
+            set wms($name,Io1) 1
+            .prop.nb.fr1.fr.10$cnt2 configure -state disable
+          } else {
+            .prop.nb.fr1.fr.10$cnt2 configure -state active
+          }
+          incr cnt2
+        }
+      }
+      grid $zond.$cnt1$cnt2 -row $cnt1 -column $cnt2  -sticky news
+      incr cnt2
+    }
+    incr cnt1
 ### SpecWMS
 
   set wmsn [frame .prop.nb.fr$ins]
@@ -485,7 +508,8 @@ global wms rs meas
 
     set cnt1 1
 
-    set lst {Adr_Moxa Port_swms Port_adam Adr_adam PixMode IntTime SName l0 l1 l2 l3 "" cntr ch InitSpec Meas}
+#    set lst {Adr_Moxa Port_swms Port_adam Adr_adam PixMode IntTime SName l0 l1 l2 l3 "" cntr ch InitSpec Meas}
+    set lst {Adr_Moxa Port_swms Port_adam Adr_adam PixMode IntTime SName l0 l1 l2 l3 InitSpec Meas}
     foreach item $lst {
 
       label $swms.title${cnt1}0 -text "$item" -width 10 -anchor w -relief ridge
@@ -1064,6 +1088,28 @@ global wms
     incr i
   }
   update
+}
+
+proc FormInfo {} {
+global wms
+
+  set str ""
+  foreach item {active temp zndjntctr calculate} inf {Active Temp Joint_cntr Post_calc} {
+    if {$wms($item)} {
+      set str "${str}$inf; "
+    }
+  }
+  foreach name $wms(zond) {
+    if {$wms($name,new_meth)} {
+      set str "${str}NM_$name; "
+    }
+    foreach item {Io1 Io2} {
+      if {$wms($name,$item)} {
+        set str "${str}${item}_$name; "
+      }
+    }
+  }
+  set wms(Info) $str
 }
 
 proc ExitPr {} {

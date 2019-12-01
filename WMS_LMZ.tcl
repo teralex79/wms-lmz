@@ -56,10 +56,18 @@ set m .menu.options
 menu $m -tearoff 0
 .menu add cascade -label "Опции" -menu $m -underline 0
 $m add command -label "Настройки" -command Properties -state disable
-$m add check -label Active -variable wms(active) -command ReadIni
-$m add check -label "Измерение температуры" -variable wms(temp) -command "SaveProp; TTContr"
-$m add check -label "Контроль свед/разв" -variable wms(zndjntctr) -command "SaveProp"
-$m add check -label "Обработка" -variable wms(calculate)
+$m add check -label Active -variable wms(active) -command {
+
+  SaveProp
+  foreach name $wms(zond) {
+    RunAdam $name
+    runSWMS $name
+  }
+  ReadIni
+}
+$m add check -label "Измерение температуры" -variable wms(temp) -command "SaveProp; TTContr; ReadIni"
+$m add check -label "Контроль свед/разв" -variable wms(zndjntctr) -command "SaveProp; ReadIni"
+$m add check -label "Обработка" -variable wms(calculate) -command "SaveProp; ReadIni"
 
 . configure -menu .menu
 
@@ -112,14 +120,23 @@ grid $zond -row 0 -column 1 -sticky nw
   button $fr.startlf.bt1 -text "Старт" -width 10 -command "StartMeas" -state disable
   label $fr.startlf.lb -textvar wms(mpoint)
   pack $fr.startlf.bt1 $fr.startlf.lb  -side top
+  incr row1
+
+#  labelframe $fr.inflf -text "Info"
+#  grid $fr.inflf -row $row1 -column $column -sticky nw -pady 5
+
+#  checkbutton $fr.inflf.led -variable wms(active)  -bg red -activeforeground green
+#  pack $fr.inflf.led
 
 set dat [frame .fr2]
 pack .fr2 -side bottom -anchor w
 
   set dt [frame $dat.dt]
   set clck [frame $dat.clck]
+  set inf [frame $dat.inf]
   grid $dt -row 0 -column 0 -sticky news
   grid $clck -row 0 -column 1 -sticky news
+  grid $inf -row 0 -column 2 -sticky news
 
 ## Sozdanie polja dati
 
@@ -132,6 +149,12 @@ pack .fr2 -side bottom -anchor w
   label $clck.clckn -width 7 -text "Время:"
   label $clck.clck -width 7 -textvariable wms(clck)
   pack $clck.clckn $clck.clck -side left
+
+## Sozdanie polja info
+
+  label $inf.infn -width 7 -text "Info:"
+  label $inf.inf -width 60 -textvariable wms(Info)
+  pack $inf.infn $inf.inf -side left
 
 # Zapusk procedur obnovlenija dati i vremeni
 
@@ -169,4 +192,3 @@ Clocks
 Data
 
 TTContr
-#if {$wms(sm)} {runsm}

@@ -11,19 +11,44 @@ global wms
 
     puts -nonewline $log [format "%4s" $name]
     puts -nonewline $log [format "%7s" $wms($name,type)]
+    puts -nonewline $log [format "%7s" lamda]
     foreach lamda $wms($name,swms,lamda) {
 
       puts -nonewline $log [format "%8s" $lamda]
     }
 
     puts $log ""
+    switch $wms($name,type) {
 
+      "swms" {
+        foreach join {1 0} type {Iñ Ið} {
+          puts -nonewline $log [clock format [clock seconds] -format "%y-%m-%d"]
+          puts -nonewline $log [format "%1s" " "]
+          puts -nonewline $log [clock format [clock seconds] -format "%H:%M:%S"]
+
+          puts -nonewline $log [format "%4s" $name]
+          puts -nonewline $log [format "%7s" $wms($name,type)]
+          puts -nonewline $log [format "%7s" $type]
+
+          foreach item $wms($name,swms,Imeas,k,$join) {
+
+            if {!$wms(active)} {
+              puts -nonewline $log [format "%8.1f" $item]
+            } else {
+              puts -nonewline $log [format "%8d" $item]
+            }
+          }
+          puts $log ""
+        }
+      }
+    }
     puts -nonewline $log [clock format [clock seconds] -format "%y-%m-%d"]
     puts -nonewline $log [format "%1s" " "]
     puts -nonewline $log [clock format [clock seconds] -format "%H:%M:%S"]
 
     puts -nonewline $log [format "%4s" $name]
     puts -nonewline $log [format "%7s" $wms($name,type)]
+    puts -nonewline $log [format "%7s" coef_k]
 
     switch $wms($name,type) {
 
@@ -40,7 +65,7 @@ global wms
 
           if {![info exists wms($name,coef,$lamda)]} {
 
-            set wms($name,coef,$lamda) 1
+            set wms($name,coef,$lamda) 1.
           }
           puts -nonewline $log [format "%8.4f" $wms($name,coef,$lamda)]
           puts -nonewline $of [format "%8.4f" $wms($name,coef,$lamda)]
@@ -78,6 +103,8 @@ global wms meas
   puts $of "wms(temp) $wms(temp)"
   puts $of "wms(sm) $wms(sm)"
   puts $of "wms(adr_tt) $wms(adr_tt)"
+  puts $of "wms(active) $wms(active)"
+  puts $of "wms(calculate) $wms(calculate)"
 
   foreach name {S01 S02} {
 
@@ -85,6 +112,7 @@ global wms meas
     puts $of "# $name"
     puts $of ""
 
+    puts $of "wms($name,new_meth)  $wms($name,new_meth)"
     puts $of "wms($name,adr,moxa)  $wms($name,adr,moxa)"
     puts $of "wms($name,port,swms) $wms($name,port,swms)"
     puts $of "wms($name,port,adam) $wms($name,port,adam)"
