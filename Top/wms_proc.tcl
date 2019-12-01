@@ -166,7 +166,7 @@ global wms meas
 
     set cnt1 2
 
-    foreach item {coef Io1 I Io2 "I/Io" "Темн.Ток" "Опора" t WMS_cmd state R ang "ост.точек" "изм.точка" Type} {
+    foreach item {coef Iсв1 I Iсв2 "I/Io" "Темн.Ток" "Опора" t WMS_cmd state R ang "ост.точек" "изм.точка" Type} {
 
       set flag 1
 
@@ -410,7 +410,7 @@ global wms rs meas
 
     set cnt1 1
 
-    foreach item {L RWI RTI RC RH ALFAI TEMPA TEMPB TEMPC Io1 Io2 Type "New method"} {
+    foreach item {L RWI RTI RC RH ALFAI TEMPA TEMPB TEMPC Iсв1 Iсв2 Type "New method"} {
 
       label $zond.title${cnt1}0 -text "$item" -width 10 -anchor w
       grid $zond.title${cnt1}0 -row $cnt1 -column 0 -sticky nw
