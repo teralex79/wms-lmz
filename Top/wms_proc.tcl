@@ -59,7 +59,7 @@ global wms meas
                         -values {0 1 2 3 4 5 6 7 8 9} -command "Valid1 $name" -modifycmd "Valid1 $name"}
             "Run" {
 
-              button $fr.${cnt1}$cnt2 -text "$item" -width 10 -anchor w -command "SaveProp;RunAdam $name; runSWMS $name;AddMZ $name; destroy .pr$name"
+              button $fr.${cnt1}$cnt2 -text "$item" -width 10 -anchor w -command "SaveProp; SetMethod $name; RunAdam $name; runSWMS $name;AddMZ $name; destroy .pr$name"
             }
             "InitSpec" {
 
@@ -292,6 +292,29 @@ global wms meas
   AddChart $name
 }
 
+proc SetMethod {name} {
+global wms
+
+  switch $wms($name,meth) {
+    "M1" {
+       set wms($name,new_meth) 0
+       set wms($name,Io1) 1
+       set wms($name,Io2) 0
+    }
+    "M2" {
+       set wms($name,new_meth) 0
+       set wms($name,Io1) 0
+       set wms($name,Io2) 0
+    }
+    "M3" {
+       set wms($name,new_meth) 1
+       set wms($name,Io1) 1
+       set wms($name,Io2) 0
+    }
+  }
+  FormInfo
+}
+
 proc Properties {} {
 global wms rs meas
 
@@ -410,7 +433,7 @@ global wms rs meas
 
     set cnt1 1
 
-    foreach item {L RWI RTI RC RH ALFAI TEMPA TEMPB TEMPC Iñâ1 Iñâ2 Type "New method"} {
+    foreach item {L RWI RTI RC RH ALFAI TEMPA TEMPB TEMPC "M1 with Join" "M2 w/o Join" "M3 New" Type} {
 
       label $zond.title${cnt1}0 -text "$item" -width 10 -anchor w
       grid $zond.title${cnt1}0 -row $cnt1 -column 0 -sticky nw
@@ -446,23 +469,16 @@ global wms rs meas
       incr cnt1
     }
 
-    foreach item {Io1 Io2} {
-
+    foreach meth {M1 M2 M3} {
       set cnt2 1
-
       foreach name $wms(zond) {
-        if {$wms($name,new_meth) && $item == "Io1"} {
-          set st disable
-        } else {
-          set st active
-        }
-        checkbutton $zond.$cnt1$cnt2 -variable wms($name,$item) -width 6 -justify center -relief ridge -state $st
+        radiobutton $zond.$cnt1$cnt2 -variable wms($name,meth) -width 6 -value $meth -justify center -relief ridge -command "SetMethod $name"
         grid $zond.$cnt1$cnt2 -row $cnt1 -column $cnt2  -sticky news
         incr cnt2
       }
       incr cnt1
     }
-    
+
     set cnt2 1
     
     foreach name $wms(zond) {
@@ -473,25 +489,6 @@ global wms rs meas
     }
     incr cnt1
 
-    set cnt2 1
-
-    foreach name $wms(zond) {
-      checkbutton $zond.$cnt1$cnt2 -variable wms($name,new_meth) -width 6 -justify center -relief ridge -command {
-        set cnt2 1
-        foreach name $wms(zond) {
-          if {$wms($name,new_meth)} {
-            set wms($name,Io1) 1
-            .prop.nb.fr1.fr.10$cnt2 configure -state disable
-          } else {
-            .prop.nb.fr1.fr.10$cnt2 configure -state active
-          }
-          incr cnt2
-        }
-      }
-      grid $zond.$cnt1$cnt2 -row $cnt1 -column $cnt2  -sticky news
-      incr cnt2
-    }
-    incr cnt1
 ### SpecWMS
 
   set wmsn [frame .prop.nb.fr$ins]
@@ -719,20 +716,19 @@ global wms rs meas
 
 proc Valid1 {name} {
 global wms
-
   set list1 {}
 
   foreach nm $wms(zond) {
 
-    lappend list1 $wms($nm,conf,adr)
+    lappend list1 $wms($nm,adr,adam)
   }
   
   foreach nm $wms(zond) {
-    if {$wms($name,conf,adr)==$wms($nm,conf,adr) && $name!=$nm} {
-      foreach n {0 1 2 3 4 5} {
+    if {$wms($name,adr,adam)==$wms($nm,adr,adam) && $name!=$nm && $wms($name,adr,moxa)==$wms($nm,adr,moxa) } {
+      foreach n {1 2} {
         if {[lsearch -all $list1 $n]<0} {
 
-          set wms($nm,conf,adr) $n
+          set wms($nm,adr,adam) $n
         }
       }
     }
@@ -1100,14 +1096,12 @@ global wms
     }
   }
   foreach name $wms(zond) {
-    if {$wms($name,new_meth)} {
-      set str "${str}NM_$name; "
-    }
-    foreach item {Io1 Io2} {
+    foreach nitem {Iñâ1 Iñâ2} item {Io1 Io2} {
       if {$wms($name,$item)} {
-        set str "${str}${item}_$name; "
+        set str "${str}${name}_${nitem}; "
       }
     }
+    set str "${str}${name}_$wms($name,meth); "
   }
   set wms(Info) $str
 }

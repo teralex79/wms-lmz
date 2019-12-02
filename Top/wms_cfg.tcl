@@ -136,6 +136,10 @@ if {$hn == "td16003"} {
 foreach name {S01 S02} {
 
   set wms($name,new_meth) 0
+  set wms($name,meth) "M3"
+  set wms($name,Io1) 1
+  set wms($name,Io2) 0
+
   set wms($name,adrDev) $adrDev
 
   set wms($name,swms,lamda) {}
@@ -152,9 +156,6 @@ foreach name {S01 S02} {
 
   set wms($name,2w,blu) 420000
   set wms($name,2w,red) 660000
-
-  set wms($name,Io1) 0
-  set wms($name,Io2) 0
 
   set wms($name,corIo) 0
   set wms($name,l,uv) 300000
