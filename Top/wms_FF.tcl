@@ -120,6 +120,11 @@ global wms meas
     puts $of "wms($name,adr,adam)  $wms($name,adr,adam)"
     puts $of "wms($name,swms,IntTime) $wms($name,swms,IntTime)"
 
+    puts $of "wms($name,corIo) $wms($name,corIo)"
+    puts $of "wms($name,l,uv) $wms($name,l,uv)"
+    puts $of "wms($name,l,ir) $wms($name,l,ir)"
+    puts $of "wms($name,npoints) $wms($name,npoints)"
+
     foreach item {L RWI RTI RC RH ALFAI TEMPA TEMPB TEMPC Y_cntr Io1 Io2} {
       if {![info exists wms($name,$item)]} {set wms($name,$item) 0}
       puts $of "wms($name,$item) $wms($name,$item)"
