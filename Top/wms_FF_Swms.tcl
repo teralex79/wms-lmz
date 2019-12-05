@@ -37,7 +37,7 @@ global wms
   puts $log ""
   puts $log ""
 
-  puts -nonewline $log "Join=$wms($name,Io1)$wms($name,Io2) (Io1,Io2); "
+  puts -nonewline $log "Join=$wms($name,Io1)$wms($name,Io2) (Iסג1,Iסג2); "
   puts -nonewline $log "L(לל)=$wms($name,L); "
   puts -nonewline $log "repeat=$wms(repeat); "
   puts -nonewline $log "PixMode=$wms($name,swms,PixMode); "
