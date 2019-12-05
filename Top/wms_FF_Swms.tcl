@@ -33,6 +33,10 @@ global wms
   puts $log ""
   puts $log ""
 
+  puts -nonewline $log "XinTube=$wms($name,coord_in_tube); "
+  puts $log ""
+  puts $log ""
+
   puts -nonewline $log "Join=$wms($name,Io1)$wms($name,Io2) (Io1,Io2); "
   puts -nonewline $log "L(μμ)=$wms($name,L); "
   puts -nonewline $log "repeat=$wms(repeat); "
@@ -140,7 +144,7 @@ global wms a
             }
           }
           default {
-            if {$join && $wms($name,new_meth) && $wms($name,tr,current)>2} {
+            if {$join && $wms($name,new_meth) && $wms($name,tr,current)>=$wms($name,coord_in_tube)} {
 
               foreach meas $wms($name,swms,Ijn,$join) {
                 puts -nonewline $log "[format "%8.1f" $meas]"
@@ -157,7 +161,7 @@ global wms a
                   puts -nonewline $log "[format "%8.1f" $meas]"
                 }
               }
-              if {$join && $wms($name,new_meth) && $wms($name,tr,current)<2} {
+              if {$join && $wms($name,new_meth) && $wms($name,tr,current)<$wms($name,coord_in_tube)} {
                 set wms($name,swms,Ijn,$join) $wms($name,swms,Imeas,$n,$join)
               }
             }

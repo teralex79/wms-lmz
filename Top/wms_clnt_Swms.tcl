@@ -120,7 +120,7 @@ global wms
   }
 
   if {!$wms($name,Io1) || !$wms($name,Io2)} {
-    if {$wms($name,tr,current)<10 && $n==1 && $join==0} {
+    if {$wms($name,tr,current)<$wms($name,coord_in_tube) && $n==1 && $join==0} {
       foreach item $wms($name,swms,Icalc,$n,$join) lamda $wms($name,swms,lamda) {
         set wms($name,$lamda,Io) $item
       }
@@ -128,15 +128,13 @@ global wms
   }
   if {$join} {
     if {$n!="k"} {
-#      if {!$wms($name,new_meth) || ($wms($name,tr,current)<10 && $n==1)} {
-        foreach item $wms($name,swms,Icalc,$n,$join) lamda $wms($name,swms,lamda) {
-          if {![info exists wms($name,coef,$lamda)]} {
+      foreach item $wms($name,swms,Icalc,$n,$join) lamda $wms($name,swms,lamda) {
+        if {![info exists wms($name,coef,$lamda)]} {
 
-            set wms($name,coef,$lamda) 1
-          }
-          set wms($name,$lamda,Io) [expr {$item*$wms($name,coef,$lamda)}]
+          set wms($name,coef,$lamda) 1
         }
-#      }
+        set wms($name,$lamda,Io) [expr {$item*$wms($name,coef,$lamda)}]
+      }
     }
     switch $join {
       "1" {

@@ -113,6 +113,7 @@ global wms meas
     puts $of ""
 
     puts $of "wms($name,new_meth)  $wms($name,new_meth)"
+    puts $of "wms($name,coord_in_tube)  $wms($name,coord_in_tube)"
     puts $of "wms($name,meth)  $wms($name,meth)"
     puts $of "wms($name,adr,moxa)  $wms($name,adr,moxa)"
     puts $of "wms($name,port,swms) $wms($name,port,swms)"
@@ -169,81 +170,54 @@ global wms meas
 
   foreach name {S01 S02} {
     set nmb 1
-    lappend str($nmb) "_________________________________"
+    lappend str($nmb) "_______________________________________"
     lappend str($nmb) "_"
     incr nmb
-    lappend str($nmb) [format "%33s" $name]
+    lappend str($nmb) [format "%39s" $name]
     lappend str($nmb) "|"
     incr nmb
-    lappend str($nmb) "_________________________________"
+    lappend str($nmb) "_______________________________________"
     lappend str($nmb) "|"
     incr nmb
     lappend str($nmb) [format "%-22s" "wms($name,adr,moxa)"]
-    lappend str($nmb) [format "%10s" "$wms($name,adr,moxa)"]
+    lappend str($nmb) [format "%16s" "$wms($name,adr,moxa)"]
     lappend str($nmb) "|"
     incr nmb
     lappend str($nmb) [format "%-22s" "wms($name,port,swms)"]
-    lappend str($nmb) [format "%10s" "$wms($name,port,swms)"]
+    lappend str($nmb) [format "%16s" "$wms($name,port,swms)"]
     lappend str($nmb) "|"
     incr nmb
     lappend str($nmb) [format "%-22s" "wms($name,port,adam)"]
-    lappend str($nmb) [format "%10s" "$wms($name,port,adam)"]
+    lappend str($nmb) [format "%16s" "$wms($name,port,adam)"]
     lappend str($nmb) "|"
     incr nmb
     lappend str($nmb) [format "%-22s" "wms($name,adr,adam)"]
-    lappend str($nmb) [format "%10s" "$wms($name,adr,adam)"]
+    lappend str($nmb) [format "%16s" "$wms($name,adr,adam)"]
     lappend str($nmb) "|"
     incr nmb
 
-    foreach item {L RWI RTI RC RH ALFAI TEMPA TEMPB TEMPC Io1 Io2} {
+    foreach item {L RWI RTI RC RH ALFAI TEMPA TEMPB TEMPC coord_in_tube Io1 Io2} {
 
       if {[info exists wms($name,$item)]} {
         lappend str($nmb) [format "%-22s" "wms($name,$item)"]
-        lappend str($nmb) [format "%10s" "$wms($name,$item)"]
+        lappend str($nmb) [format "%16s" "$wms($name,$item)"]
         lappend str($nmb) "|"
         incr nmb
       }
     }
     lappend str($nmb) [format "%-22s" "wms($name,type)"]
-    lappend str($nmb) [format "%10s" "$wms($name,type)"]
-    lappend str($nmb) "|"
-    incr nmb
-    lappend str($nmb) [format "%-22s" "wms($name,conf,adr)"]
-    lappend str($nmb) [format "%10s" "$wms($name,conf,adr)"]
+    lappend str($nmb) [format "%16s" "$wms($name,type)"]
     lappend str($nmb) "|"
     incr nmb
 
-    foreach item [concat $wms(colorlist) ref] {
-
-      lappend str($nmb) [format "%-22s" "wms($name,conf,I_$item)"]
-      lappend str($nmb) [format "%10s" "$wms($name,conf,I_$item)"]
-      lappend str($nmb) "|"
-      incr nmb
-      lappend str($nmb) [format "%-22s" "wms($name,conf,U_$item)"]
-      lappend str($nmb) [format "%10s" "$wms($name,conf,U_$item)"]
-      lappend str($nmb) "|"
-      incr nmb
-    }
-
-    foreach item $wms(colorlist) {
-
-      lappend str($nmb) [format "%-22s" "wms($name,lamda,$item)"]
-      lappend str($nmb) [format "%10s" "$wms($name,lamda,$item)"]
-      lappend str($nmb) "|"
-      incr nmb
-      lappend str($nmb) [format "%-22s" "meas($name,$item)"]
-      lappend str($nmb) [format "%10s" "$meas($name,$item)"]
-      lappend str($nmb) "|"
-      incr nmb
-    }
     foreach item {blu red} {
 
       lappend str($nmb) [format "%-22s" "wms($name,2w,$item)"]
-      lappend str($nmb) [format "%10s" "$wms($name,2w,$item)"]
+      lappend str($nmb) [format "%16s" "$wms($name,2w,$item)"]
       lappend str($nmb) "|"
       incr nmb
     }
-    lappend str($nmb) "_________________________________"
+    lappend str($nmb) "_______________________________________"
     lappend str($nmb) "|"
     incr nmb
   }

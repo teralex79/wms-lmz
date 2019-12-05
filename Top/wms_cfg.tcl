@@ -139,6 +139,7 @@ foreach name {S01 S02} {
   set wms($name,meth) "M3"
   set wms($name,Io1) 1
   set wms($name,Io2) 0
+  set wms($name,coord_in_tube) 2
 
   set wms($name,adrDev) $adrDev
 
