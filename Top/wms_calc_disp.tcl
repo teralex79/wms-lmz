@@ -199,6 +199,7 @@ global wms
     .fr.bt2 configure -text $nmb
     update
     set nmb [expr {$nmb-1}]
+puts "OpenFile $fl2"
     OpenFile $fl2
   }
 }
@@ -512,8 +513,9 @@ global calc wms
           set calc($name,new_meth) [string range $b 0 0]
         }
         if {[lsearch $str "XinTube=*"]!=-1} {
-          set b [lindex [split [lindex $str 0] =] 1]
-          set calc($name,coord_in_tube) [string range $b 0 0]
+          set b [split $str ";"]
+          set d [split [lindex $b 0] =]
+          set calc($name,coord_in_tube) [lindex $d 1]
         }
         if {[lsearch $str "L(μμ)=*"]!=-1} {
           set b [split $str ";"]
@@ -674,12 +676,12 @@ global calc wms
             incr cnt4
           }
           set calc(old) 1
-          if {![info exists calc(oldred)]} {
+          if {![info exists calc(oldred)] || $calc(oldred) == "red"} {
             set calc(old) 0
             set calc(oldred) red
           }
 
-          if {![info exists calc(oldblu)]} {
+          if {![info exists calc(oldblu)] || $calc(oldblu) == "blu"} {
 
             set calc(old) 0
             set calc(oldblu) blu
@@ -706,7 +708,7 @@ global calc wms
 
           lappend calc($name,tr) $calc($name,X,$pnt)
 #
-          if {$calc($name,X,$pnt)<$wms($name,coord_in_tube)} {lappend calc($name,Io,cntlist) $pnt}
+          if {$calc($name,X,$pnt)<$calc($name,coord_in_tube)} {lappend calc($name,Io,cntlist) $pnt}
         }
         set Join [lindex $str $indxJ]
         set Type [lindex $str $indxType]
@@ -1085,7 +1087,6 @@ global c33 c41 a33 a41
 ###
       set flag($pnt) 0
 
-
       if {$calc(old)} {
         set b [list $calc($name,red,index) $calc($name,blu,index)]
       } else {
@@ -1108,7 +1109,6 @@ global c33 c41 a33 a41
       set cnt 0
       catch {global x${name}Spec22 y${name}Spec22}
       catch {global x${name}I_Io y${name}I_Io}
-
       foreach k [concat $calc($name,lamda,cutnmb) $b] {
 
         set Io_aver 0
@@ -1982,8 +1982,9 @@ global wms mff
           set mff($name,new_meth) [string range $b 0 0]
         }
         if {[lsearch $str "XinTube=*"]!=-1} {
-          set b [lindex [split [lindex $str 0] =] 1]
-          set mff($name,coord_in_tube) [string range $b 0 0]
+          set b [split $str ";"]
+          set d [split [lindex $b 0] =]
+          set mff($name,coord_in_tube) [lindex $d 1]
         }
         if {[lsearch $str "L(μμ)=*"]!=-1} {
           set b [split $str ";"]
@@ -2015,7 +2016,6 @@ global wms mff
           }
         }
       }
-
       set str [concat $str]
       if {[lindex $str 0]=="hh:mm:ss"} {
         set flag 1
@@ -2227,7 +2227,7 @@ global wms mff
 
     foreach item {temp wms} {
       if {$item!="wms" || $wms($name,wet,$reads)} {
-        if {$item=="wms" || $mff(x,$reads)>=$mff($name,coord_in_tube} {
+        if {$item=="wms" || $mff(x,$reads)>=$mff($name,coord_in_tube)} {
           puts -nonewline $mf($item) "$mff($name,time,$reads)"
           puts $mf($item) " [format "%11.4f" $mff(I_blu01,$reads)]	[format "%11.4f" $mff(I_red01,$reads)]	[format "%11.4f" $mff(I_blu,$reads)]	[format "%11.4f" $mff(I_red,$reads)]	[format "%11.4f" $mff(I_blu02,$reads)]	[format "%11.4f" $mff(I_red02,$reads)]	[format "%11.4f" $mff($name,temp,$reads)]"
           puts $mf($item) ""
@@ -2253,7 +2253,7 @@ global wms mff
 
     for {set i 1} {$i<=$mff(end)} {incr i} {
       if {$item!="wms" || $wms($name,wet,$i)} {
-        if {$item=="wms" || $mff(x,$i)>=$mff($name,coord_in_tube} {
+        if {$item=="wms" || $mff(x,$i)>=$mff($name,coord_in_tube)} {
           puts $mf($item) "[format "%3.0f" $mff(x,$i)] [format "%3.0f" $mff(y,$i)] $mff($name,Dens,$i)"
         }
       }
