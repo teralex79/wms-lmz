@@ -5,11 +5,13 @@ exec wish "$0" "$@"
 package require Tktable
 
 #set tt(path) "V:/Terentjev/Work/WMS_New/WMS_Zond/WMS_TT"
-set tt(path) "."
-source $tt(path)/TT/wms_temp_define.tcl
-source $tt(path)/TT/wms_temp_driver.tcl
-source $tt(path)/TT/wms_temp_maketask.tcl
-source $tt(path)/TT/wms_temp_serv.tcl
+set tt(bin_path) "./bin/tt"
+set tt(conf_path) "./conf/tt"
+
+source $tt(bin_path)/wms_temp_define.tcl
+source $tt(bin_path)/wms_temp_driver.tcl
+source $tt(bin_path)/wms_temp_maketask.tcl
+source $tt(bin_path)/wms_temp_serv.tcl
 
 #console show
 
@@ -21,8 +23,8 @@ wm protocol . WM_DELETE_WINDOW exitProg
 wm geometry . "=300x400+200+100"
 
 # Global defaults
-if { [file exists $tt(path)/TT/tt_[info hostname].def] } {
-  set fd [open $tt(path)/TT/tt_[info hostname].def r]
+if { [file exists $tt(conf_path)/tt_[info hostname].def] } {
+  set fd [open $tt(conf_path)/tt_[info hostname].def r]
   set lt [gets $fd]
   close $fd
   set config(dev) [lindex $lt 0]
@@ -34,16 +36,16 @@ if { [file exists $tt(path)/TT/tt_[info hostname].def] } {
 } else {
   set config(dev) "COM1"
   set config(rate) 19200
-  set config(canals) $tt(path)/TT/tt_canals.def
-  set config(idir) $tt(path)/TT/temp
+  set config(canals) $tt(conf_path)/tt_canals.def
+  set config(idir) $tt(conf_path)/temp
   set config(debug) 1
   set config(edit) 0
 }
 
 #
 # Smart placement
-if { [file exists "$tt(path)/TT/wms_temp_[info hostname].cfg"] } {
-  set f [open "$tt(path)/TT/wms_temp_[info hostname].cfg" "r"]
+if { [file exists "$tt(conf_path)/smart_place/wms_temp_[info hostname].cfg"] } {
+  set f [open "$tt(conf_path)/smart_place/wms_temp_[info hostname].cfg" "r"]
   while {![eof $f]} {
     set s [eval list [gets $f]]
     if {[llength $s]} {
@@ -58,7 +60,7 @@ if { [file exists "$tt(path)/TT/wms_temp_[info hostname].cfg"] } {
 }
 
 # прочитать описания каналов
-define $tt(path)/TT/tt_canals.def
+define $tt(conf_path)/tt_canals.def
 
 if {[llength $config(pars_name)]<16} {
 
@@ -107,7 +109,7 @@ proc runScan {} {
 global config par
 # Подготовка задания
   set ltask [makeTask]
-puts "lt=$ltask"
+#puts "lt=$ltask"
 
 # Открыли порт
   if {[catch {set fh [socket 192.168.0.124 4002]}]} {
@@ -116,20 +118,20 @@ puts "lt=$ltask"
   } else {
     fconfigure $fh -translation binary -eofchar {}
     # -blocking 0
-puts "run TT2"
+#puts "run TT2"
 update
 # -timeout 5000
     set config(port) $fh
 
 # Загрузка задания
     set cod [loadTask $ltask]
-puts "cod=$cod"
+#puts "cod=$cod"
 update
     set config(status) "Loaded"
 
 # Запуск измерений
     set codr [runDev]
-puts "RUN cod=$codr. Working..."
+#puts "RUN cod=$codr. Working..."
 update
     set config(status) "Run"
 
@@ -246,11 +248,11 @@ global config tt
   stopScan
   catch {close $config(port)}
 # Save window positions for smart placement
-  set f [open "$tt(path)/TT/wms_temp_[info hostname].cfg" "w"]
+  set f [open "$tt(conf_path)/smart_place/wms_temp_[info hostname].cfg" "w"]
   set g [wm geometry .]
   puts $f ". $g"
   close $f
   exit
 }
 
-after 100 runScan
+#after 100 runScan

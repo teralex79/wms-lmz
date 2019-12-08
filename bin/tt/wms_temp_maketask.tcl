@@ -99,7 +99,7 @@ puts -nonewline "$par($i,xc):"
   set task($ib) $x4; incr ib
 
 # Контрольная запись в файл
-  set fd [open "$tt(path)/TT/tasktcl.dat" "w+"]
+  set fd [open "$tt(conf_path)/tasktcl.dat" "w+"]
   fconfigure $fd -translation binary
   for {set i 0} {$i<$ib} {incr i} {
     puts -nonewline $fd $task($i)

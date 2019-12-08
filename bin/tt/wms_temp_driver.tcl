@@ -51,14 +51,14 @@ global config command inbuf
 # Get respond
   while {1} {
    set ddd [read $fh 1]
-puts "dddA $ddd"
+#puts "dddA $ddd"
 update
    if {$ddd==""} {
      tk_messageBox -message "Нет связи" -title "Error" -type ok -icon error
      break
    }
    binary scan $ddd c bt
-puts "btA $bt"
+#puts "btA $bt"
 update
    if {$bt==27} break
   }
@@ -84,7 +84,7 @@ proc bzapros { name len blen offset} {
 global command task inbuf
 global config
 
-puts "bzapros"
+#puts "bzapros"
 update
   set fcmd(0) 27
   set ncmd 2
