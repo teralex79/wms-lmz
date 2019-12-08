@@ -17,22 +17,28 @@ package require mysqltcl
 
 ## Ispol'zuemie fayli
 
-source ./Top/wms_cfg.tcl
-source ./Top/wms_proc.tcl
-source ./Top/wms_Add_Point.tcl
-source ./Top/wms_meas.tcl
+set wms(src_path) "./src/wms"
+set wms(conf_path) "./conf/wms"
+set wms(log_path) "./log/wms"
+set wms(data_path) "./data"
 
-source ./Top/wms_RF.tcl
-source ./Top/wms_FF.tcl
-source ./Top/wms_FF_Swms.tcl
+source ./WMS_CALC.tcl
 
-source ./Top/wms_calc_disp.tcl
+source $wms(src_path)/wms_cfg.tcl
+source $wms(src_path)/wms_proc.tcl
+source $wms(src_path)/wms_Add_Point.tcl
+source $wms(src_path)/wms_meas.tcl
 
-source ./Top/wms_clnt_TT.tcl
-source ./Top/wms_clnt_Swms.tcl
-source ./Top/wms_clnt_Adam.tcl
+source $wms(src_path)/wms_RF.tcl
+source $wms(src_path)/wms_FF.tcl
+source $wms(src_path)/wms_FF_Swms.tcl
 
-  wm title . "WMS_LMZ"
+
+source $wms(src_path)/wms_clnt_TT.tcl
+source $wms(src_path)/wms_clnt_Swms.tcl
+source $wms(src_path)/wms_clnt_Adam.tcl
+
+  wm title . "WMS_LMZ v2.0"
   wm geometry . "=+250+150"
   wm protocol . WM_DELETE_WINDOW ExitPr
   focus -force .
@@ -122,12 +128,6 @@ grid $zond -row 0 -column 1 -sticky nw
   pack $fr.startlf.bt1 $fr.startlf.lb  -side top
   incr row1
 
-#  labelframe $fr.inflf -text "Info"
-#  grid $fr.inflf -row $row1 -column $column -sticky nw -pady 5
-
-#  checkbutton $fr.inflf.led -variable wms(active)  -bg red -activeforeground green
-#  pack $fr.inflf.led
-
 set dat [frame .fr2]
 pack .fr2 -side bottom -anchor w
 
@@ -156,11 +156,9 @@ pack .fr2 -side bottom -anchor w
   label $inf.inf -width 60 -textvariable wms(Info)
   pack $inf.infn $inf.inf -side left
 
-# Zapusk procedur obnovlenija dati i vremeni
+  if { [file exists "$wms(conf_path)/[info hostname].ini"] } {
 
-  if { [file exists "Data/Config/[info hostname].ini"] } {
-
-    set of [open "Data/Config/[info hostname].ini" "r"]
+    set of [open "$wms(conf_path)/[info hostname].ini" "r"]
     set data [read $of]
     close $of
 
@@ -187,6 +185,8 @@ pack .fr2 -side bottom -anchor w
 
 ReadIni
 FindMeasDate
+
+# Zapusk procedur obnovlenija dati i vremeni
 
 Clocks
 Data

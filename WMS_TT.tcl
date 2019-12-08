@@ -5,13 +5,13 @@ exec wish "$0" "$@"
 package require Tktable
 
 #set tt(path) "V:/Terentjev/Work/WMS_New/WMS_Zond/WMS_TT"
-set tt(bin_path) "./bin/tt"
+set tt(src_path) "./src/tt"
 set tt(conf_path) "./conf/tt"
 
-source $tt(bin_path)/wms_temp_define.tcl
-source $tt(bin_path)/wms_temp_driver.tcl
-source $tt(bin_path)/wms_temp_maketask.tcl
-source $tt(bin_path)/wms_temp_serv.tcl
+source $tt(src_path)/wms_temp_define.tcl
+source $tt(src_path)/wms_temp_driver.tcl
+source $tt(src_path)/wms_temp_maketask.tcl
+source $tt(src_path)/wms_temp_serv.tcl
 
 #console show
 
@@ -255,4 +255,4 @@ global config tt
   exit
 }
 
-#after 100 runScan
+after 100 runScan
