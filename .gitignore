@@ -3,10 +3,9 @@
 *.acn
 *.dat
 *.ini
-*.BAK
 *.bak
 *.ppr
 *.lnk
-*.Log
+*.log
 *.cfg
-*.DAT
+*.smp
