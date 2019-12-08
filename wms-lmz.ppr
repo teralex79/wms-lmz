@@ -1,0 +1,101 @@
+[Config]
+Compilator.SaveAll=0
+Compilator.Capture=0
+Compilator.CompileOnBackground=0
+Compilator.ProgSaveAll=0
+Compilator.ProgRunSelection=0
+Compilator.LogType=0
+DefaultDir=D:\git\wms-lmz
+DefaultCP=0
+LogtoEnd=1
+DontOpen=0
+AbsolutePath=0
+FileFormat=0
+ProjectFilesOnly=0
+HTServer=localhost
+Extensions=*.tcl
+[Project tree]
+wms-lmz
+	+wms-lmz
+		-conf
+			-calc
+			-tt
+				-smart_place
+			-wms
+				-S01
+				-S02
+		-data
+			-19120200
+				-19120200
+					-S01
+						-Temp
+				-19120201
+					-S01
+						-Temp
+				-19120202
+					-S01
+						-Temp
+			-19120500
+				-19120500
+					-S01
+						-Temp
+					-S02
+						-Temp
+			-19120600
+				-19120600
+					-S01
+						-Temp
+					-S02
+						-Temp
+			-19120800
+				-19120800
+					-S01
+						-Temp
+				-19120801
+					-S01
+						-Temp
+			-Test
+				-19120200
+					-S01
+						-Temp
+				-19120201
+					-S01
+						-Temp
+				-19120202
+					-S02
+						-Temp
+		-log
+			-wms
+		+src
+			-tt
+				src\tt\wms_temp_define.tcl
+				src\tt\wms_temp_driver.tcl
+				src\tt\wms_temp_maketask.tcl
+				src\tt\wms_temp_serv.tcl
+			+wms
+				src\wms\wms_Add_Point.tcl
+				src\wms\wms_cfg.tcl
+				src\wms\wms_clnt_Adam.tcl
+				src\wms\wms_clnt_SM.tcl
+				src\wms\wms_clnt_Swms.tcl
+				src\wms\wms_clnt_TT.tcl
+				src\wms\wms_FF.tcl
+				src\wms\wms_FF_Swms.tcl
+				src\wms\wms_meas.tcl
+				src\wms\wms_proc.tcl
+				src\wms\wms_RF.tcl
+		WMS_CALC.tcl
+		WMS_LMZ.tcl
+		WMS_TT.tcl
+[Open project files]
+0=WMS_LMZ.tcl
+1=src\wms\wms_FF.tcl
+[Selected Project Files]
+Main=
+Selected=WMS_LMZ.tcl
+[WMS_LMZ.tcl]
+TopLine=1
+Caret=1,1
+[src\wms\wms_FF.tcl]
+TopLine=1
+Caret=18,7
