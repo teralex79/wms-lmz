@@ -299,7 +299,7 @@ global wms
     "M1" {
        set wms($name,new_meth) 0
        set wms($name,Io1) 1
-       set wms($name,Io2) 0
+       set wms($name,Io2) 1
     }
     "M2" {
        set wms($name,new_meth) 0

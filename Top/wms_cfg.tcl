@@ -135,7 +135,7 @@ if {$hn == "td16003"} {
 
 foreach name {S01 S02} {
 
-  set wms($name,new_meth) 0
+  set wms($name,new_meth) 1
   set wms($name,meth) "M3"
   set wms($name,Io1) 1
   set wms($name,Io2) 0
