@@ -7,6 +7,7 @@ package require Tktable
 #set tt(path) "V:/Terentjev/Work/WMS_New/WMS_Zond/WMS_TT"
 set tt(src_path) "./src/tt"
 set tt(conf_path) "./conf/tt"
+catch [file mkdir $tt(conf_path)/smart_place]
 
 source $tt(src_path)/wms_temp_define.tcl
 source $tt(src_path)/wms_temp_driver.tcl
@@ -255,4 +256,4 @@ global config tt
   exit
 }
 
-after 100 runScan
+#after 100 runScan

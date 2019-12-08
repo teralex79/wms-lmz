@@ -46,11 +46,16 @@ global wms lststr
 
   set name1 [string range $name 1 end]
 
-  set of [open $wms(conf_path)/$name/RWV_${name1}.dat]
-  set data [read $of]
-  close $of
+  if {![catch {set of [open $wms(conf_path)/$name/RWV_${name1}.dat]}]} {
 
-  set lines [split $data \n]
+    set data [read $of]
+    close $of
+    set lines [split $data \n]
+  } else {
+    set lines {"1  43 0.156 1" "210  43 0.156 1" "1  43 0.156 1"}
+  }
+
+
   set lststr($name1,rwv) $lines
 
   set wms($name,tr) {}

@@ -22,7 +22,7 @@ set wms(conf_path) "./conf/wms"
 set wms(log_path) "./log/wms"
 set wms(data_path) "./data"
 
-catch [file mkdir $wms(conf_path)]
+catch [file mkdir $wms(conf_path)/smart_place]
 catch [file mkdir $wms(log_path)]
 catch [file mkdir $wms(data_path)]
 
