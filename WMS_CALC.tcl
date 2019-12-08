@@ -3,6 +3,9 @@
 ### Так же графический интерфейс и доп. процедуры для возможности постобработки, путем выбора файла или папки с файлами с измеренными данными.
 ### Для запуска режима постобработки файл запускается с аргументом, напр. "1" (Уже не актуально, можно запускать без аргументов)
 
+set calc(conf_path) "./conf/calc"
+catch [file mkdir $calc(conf_path)]
+
 if {$argc>0 || ([info exists ::argv0] && $::argv0 eq [info script])} {
   set wms(top) 1
   set wms(unimod) 1
@@ -98,9 +101,9 @@ global calc wms
 
   .fr.bt configure -state disable
   .fr.bt2 configure -state disable
-  set w "./Data"
+  set w "./data"
   
-  if {![catch {open [info hostname]_unimod.ini} of]} {
+  if {![catch {open $calc(conf_path)/[info hostname]_unimod.ini} of]} {
     set data [read $of]
     close $of
 
@@ -132,8 +135,18 @@ global calc wms
   OpenFile $file
 }
 
+proc ::findFiles { baseDir pattern } {
+  set dirs [ glob -nocomplain -type d [ file join $baseDir * ] ]
+  set files {}
+  foreach dir $dirs {
+    lappend files {*}[ findFiles $dir $pattern ]
+  }
+  lappend files {*}[ glob -nocomplain -type f [ file join $baseDir $pattern ] ]
+  return $files
+}
+
 proc DirDialog {} {
-global wms
+global calc wms
 ## Predvaritel'noe zadanie puti k konfiguratsionnomu faylu
 
   .fr.bt configure -state disable
@@ -144,7 +157,7 @@ global wms
   set fl(all) {}
   set w "."
 
-  if {![catch {open [info hostname]_unimod.ini} of]} {
+  if {![catch {open $calc(conf_path)/[info hostname]_unimod.ini} of]} {
     set data [read $of]
     close $of
 
@@ -155,7 +168,7 @@ global wms
     }
   }
 
-  if {![catch {open [info hostname]_ff.ini} of]} {
+  if {![catch {open $calc(conf_path)/[info hostname]_ff.ini} of]} {
     set data [read $of]
     close $of
 
@@ -164,6 +177,8 @@ global wms
       set str [eval list $str]
       set [lindex $str 0] [lindex $str 1]
     }
+  } else {
+    set initialdir ./data
   }
 
   if {[info exists initialdir]} {
@@ -176,8 +191,7 @@ global wms
 
   if {[llength $dir]} {
 ## Sohranenie poslednego vvedennogo puti
-
-    set of [open [info hostname]_ff.ini w]
+    set of [open $calc(conf_path)/[info hostname]_ff.ini w]
     puts $of "initialdir $dir"
     close $of
   } else {
@@ -186,20 +200,13 @@ global wms
     .fr.bt2 configure -state active
   }
   set flist {}
-  set b [glob -nocomplain -directory "$dir" -type d *]
-  foreach item [eval list $b] {
-    set c [glob -nocomplain -directory "$item" -type d *]
-    foreach item2 [eval list $c] {
-      set a [glob -nocomplain -directory "$item2" -type f *{wms.txt}*]
-      lappend flist $a
-    }
-  }
-  set nmb [llength [eval list $flist]]
-  foreach fl2 [eval list $flist] {
+
+  set flist [ join [ findFiles ./data "*{wms.txt}*" ] \n ]
+  set nmb [llength $flist]
+  foreach fl2 $flist {
     .fr.bt2 configure -text $nmb
     update
     set nmb [expr {$nmb-1}]
-puts "OpenFile $fl2"
     OpenFile $fl2
   }
 }
@@ -209,6 +216,7 @@ global calc wms
 
   if {[llength $file]} {
 ## Sohranenie poslednego vvedennogo puti
+puts "OpenFile $file"
 
     .fr.bt configure -state disable
     .fr.bt2 configure -state disable
@@ -232,7 +240,7 @@ global calc wms
       if {$type==$wms($name,type)} {incr cnt}
     }
     if {$cnt==2} {
-      set of [open [info hostname]_unimod.ini w]
+      set of [open $calc(conf_path)/[info hostname]_unimod.ini w]
       puts $of "calc(initialdir) $path2"
       foreach nm {S01 S02 S04 S05 S07} {
         puts $of "wms($nm,l,uv)    $wms($nm,l,uv)   "
@@ -271,8 +279,7 @@ global calc
 # Replace (in the Current_Dir in variable Current_Dir) every instance of "/Top" which is a word by itself with "" (actualy remove "/Top" if exist):
   regsub -all {\/Top} $Current_Dir "" Current_Dir
 
-  set file "${Current_Dir}/Data/Config/K2.txt"
-  set of [open $file]
+  set of [open $calc(conf_path)/K2.txt]
   set data [read $of]
   close $of
 
@@ -443,7 +450,7 @@ global calc wms
 
     button $chtp.20 -text "Start" -command {
       global a
-      set off [open [info hostname]_unimod.ini w]
+      set off [open $calc(conf_path)/[info hostname]_unimod.ini w]
       puts $off "calc(initialdir) $calc(initialdir)"
       foreach name {S01 S02 S04 S05 S07} {
         puts $off "wms($name,l,uv)    $wms($name,l,uv)   "
