@@ -1,1 +1,12 @@
 data/
+*.txt
+!K2.txt
+*.acn
+*.dat
+*.ini
+*.bak
+*.ppr
+*.lnk
+*.log
+*.cfg
+*.smp
