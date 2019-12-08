@@ -33,7 +33,6 @@ set wms(EPSI)  5
 set wms(STATUS)  {514 0 0 0 0 0}
 
 set wms(COMPATH)  "./"
-set wms(DATAPATH)  "./Data"
 set wms(CURPATH)  "./"
 
 set wms(GRAPH) 1
@@ -118,15 +117,15 @@ set cnt 0
 
 set adrDev 1
 
-set hn [info hostname]
+set wms(hostname) [info hostname]
 
 set wms(tt_adr_list) {localhost 192.168.0.101 192.168.0.102 192.168.0.103}
 
-if {$hn == "td16003"} {
+if {$wms(hostname) == "td16003"} {
   set wms(adr_tt) "192.168.0.101"
-} elseif {$hn == "td15003"} {
+} elseif {$wms(hostname) == "td15003"} {
   set wms(adr_tt) "192.168.0.101"
-} elseif {$hn == "tn12001"} {
+} elseif {$wms(hostname) == "tn12001"} {
   set wms(adr_tt) "192.168.0.101"
 } else {
   set wms(adr_tt) "localhost"

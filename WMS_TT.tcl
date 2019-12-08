@@ -44,8 +44,8 @@ if { [file exists $tt(conf_path)/tt_[info hostname].def] } {
 
 #
 # Smart placement
-if { [file exists "$tt(conf_path)/smart_place/wms_temp_[info hostname].cfg"] } {
-  set f [open "$tt(conf_path)/smart_place/wms_temp_[info hostname].cfg" "r"]
+if { [file exists "$tt(conf_path)/smart_place/wms_temp_[info hostname].smp"] } {
+  set f [open "$tt(conf_path)/smart_place/wms_temp_[info hostname].smp" "r"]
   while {![eof $f]} {
     set s [eval list [gets $f]]
     if {[llength $s]} {
@@ -248,7 +248,7 @@ global config tt
   stopScan
   catch {close $config(port)}
 # Save window positions for smart placement
-  set f [open "$tt(conf_path)/smart_place/wms_temp_[info hostname].cfg" "w"]
+  set f [open "$tt(conf_path)/smart_place/wms_temp_[info hostname].smp" "w"]
   set g [wm geometry .]
   puts $f ". $g"
   close $f

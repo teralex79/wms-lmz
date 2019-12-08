@@ -341,7 +341,7 @@ global wms
   set bt [frame .edcoef.frbt]
   grid $bt -row 1 -column 0 -sticky news
     set clm 0
-    button $bt.save -text "OK" -width 10 -command "SaveCoef $name; destroy .edcoef"
+    button $bt.save -text "OK" -width 10 -command "SaveCoef $name 1; destroy .edcoef"
     grid $bt.save -row 0 -column $clm -padx 1 -pady 2
     incr clm
     button $bt.save2 -text "Применить" -width 10 -command "SaveCoef $name; destroy .edcoef; EditCoefSWMS $name"

@@ -1,7 +1,7 @@
 proc ReadIni {} {
 global wms meas
 
-  if {![catch {set ini [open "$wms(DATAPATH)/Config/[info hostname]_prop.ini" "r"]}]} {
+  if {![catch {set ini [open $wms(conf_path)/$wms(hostname)_prop.ini "r"]}]} {
 
     set data [read $ini]
     close $ini
@@ -22,7 +22,7 @@ global wms meas
 proc ReadCoef {name} {
 global wms
 
-  if {![catch {set of [open "./Data/Config/$name/Coef_$wms($name,type)_$name.DAT" "r"]}]} {
+  if {![catch {set of [open $wms(conf_path)/$name/coef_$wms($name,type)_$name.dat "r"]}]} {
     set data [read $of]
     close $of
 
@@ -46,7 +46,7 @@ global wms lststr
 
   set name1 [string range $name 1 end]
 
-  set of [open "./Data/Config/$name/RWV_${name1}.DAT"]
+  set of [open $wms(conf_path)/$name/RWV_${name1}.dat]
   set data [read $of]
   close $of
 

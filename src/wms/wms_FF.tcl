@@ -1,10 +1,10 @@
-proc SaveCoef {name} {
+proc SaveCoef {name man} {
 global wms
 
-  catch [file mkdir ./Data/Config/$name/]
+  catch [file mkdir $wms(conf_path)/$name/]
   if {$wms($name,active)} {
 
-    set log [open "./Data/Config/Coef_$wms($name,type).Log" "a"]
+    set log [open $wms(log_path)/coef_$wms($name,type).log "a"]
 
     puts -nonewline $log [format "%8s" Date]
     puts -nonewline $log [format "%9s" time]
@@ -18,27 +18,30 @@ global wms
     }
 
     puts $log ""
-    switch $wms($name,type) {
 
-      "swms" {
-        foreach join {1 0} type {Iñ Ið} {
-          puts -nonewline $log [clock format [clock seconds] -format "%y-%m-%d"]
-          puts -nonewline $log [format "%1s" " "]
-          puts -nonewline $log [clock format [clock seconds] -format "%H:%M:%S"]
+    if {!$man} {
+      switch $wms($name,type) {
 
-          puts -nonewline $log [format "%4s" $name]
-          puts -nonewline $log [format "%7s" $wms($name,type)]
-          puts -nonewline $log [format "%7s" $type]
+        "swms" {
+          foreach join {1 0} type {Iñ Ið} {
+            puts -nonewline $log [clock format [clock seconds] -format "%y-%m-%d"]
+            puts -nonewline $log [format "%1s" " "]
+            puts -nonewline $log [clock format [clock seconds] -format "%H:%M:%S"]
 
-          foreach item $wms($name,swms,Imeas,k,$join) {
+            puts -nonewline $log [format "%4s" $name]
+            puts -nonewline $log [format "%7s" $wms($name,type)]
+            puts -nonewline $log [format "%7s" $type]
 
-            if {!$wms(active)} {
-              puts -nonewline $log [format "%8.1f" $item]
-            } else {
-              puts -nonewline $log [format "%8d" $item]
+            foreach item $wms($name,swms,Imeas,k,$join) {
+
+              if {!$wms(active)} {
+                puts -nonewline $log [format "%8.1f" $item]
+              } else {
+                puts -nonewline $log [format "%8d" $item]
+              }
             }
+            puts $log ""
           }
-          puts $log ""
         }
       }
     }
@@ -54,7 +57,7 @@ global wms
 
       "swms" {
 
-        set of  [open "./Data/Config/$name/Coef_swms_$name.DAT" "w"]
+        set of  [open $wms(conf_path)/$name/coef_swms_$name.dat "w"]
 
         foreach lamda $wms($name,swms,lamda) {
 
@@ -88,7 +91,7 @@ global wms
 proc SaveProp {} {
 global wms meas
 
-  set of [open $wms(DATAPATH)/Config/[info hostname]_prop.ini "w"]
+  set of [open $wms(conf_path)/$wms(hostname)_prop.ini "w"]
   
   puts $of "wms(lamda,old,red) $wms(lamda,old,red)"
   puts $of "wms(lamda,old,blu) $wms(lamda,old,blu)"
@@ -98,7 +101,7 @@ global wms meas
   puts $of "wms(calibr) $wms(calibr)"
   puts $of "wms(avermeas) $wms(avermeas)"
   puts $of "wms(COMPATH) $wms(COMPATH)"
-  puts $of "wms(DATAPATH) $wms(DATAPATH)"
+  puts $of "wms(data_path) $wms(data_path)"
   puts $of "wms(zndjntctr) $wms(zndjntctr)"
   puts $of "wms(temp) $wms(temp)"
   puts $of "wms(sm) $wms(sm)"
@@ -133,8 +136,6 @@ global wms meas
 
     puts $of "wms($name,type) $wms($name,type)"
 
-#    puts $of "wms($name,conf,adr) $wms($name,conf,adr)"
-
     foreach item {blu red} {
 
       puts $of "wms($name,2w,$item) $wms($name,2w,$item)"
@@ -149,7 +150,7 @@ global wms meas
   set ctime [clock format [clock seconds] -format "%H:%M:%S"]
   set date [clock format [clock seconds] -format "%y_%m_%d"]
 
-  set of [open [info hostname]_prop.log "a"]
+  set of [open $wms(log_path)/$wms(hostname)_prop.log "a"]
 
   puts $of "${date} $ctime"
 
@@ -163,7 +164,7 @@ global wms meas
   puts $of "wms(calibr) $wms(calibr)"
   puts $of "wms(avermeas) $wms(avermeas)"
   puts $of "wms(COMPATH) $wms(COMPATH)"
-  puts $of "wms(DATAPATH) $wms(DATAPATH)"
+  puts $of "wms(data_path) $wms(data_path)"
   puts $of "wms(zndjntctr) $wms(zndjntctr)"
   puts $of "wms(temp) $wms(temp)"
   puts $of "wms(sm) $wms(sm)"
@@ -196,7 +197,7 @@ global wms meas
     lappend str($nmb) "|"
     incr nmb
 
-    foreach item {L RWI RTI RC RH ALFAI TEMPA TEMPB TEMPC coord_in_tube Io1 Io2} {
+    foreach item {L RWI RTI RC RH ALFAI TEMPA TEMPB TEMPC coord_in_tube meth new_meth Io1 Io2} {
 
       if {[info exists wms($name,$item)]} {
         lappend str($nmb) [format "%-22s" "wms($name,$item)"]
@@ -234,9 +235,9 @@ global wms mtbl${pfn} row cb
 
   set name S$pfn
 
-  file copy -force "./Data/Config/S$pfn/RWV_${pfn}.DAT" "./Data/Config/S$pfn/RWV_${pfn}.BAK"
+  file copy -force $wms(conf_path)/S$pfn/RWV_${pfn}.dat $wms(conf_path)/S$pfn/RWV_${pfn}.bak
 
-  set of [open "./Data/Config/S$pfn/RWV_${pfn}.DAT" "w"]
+  set of [open $wms(conf_path)/S$pfn/RWV_${pfn}.dat "w"]
 
   set mt "mtbl$pfn"
   for {set i 0} {$i<$row($name)} {incr i} {

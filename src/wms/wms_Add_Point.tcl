@@ -2,8 +2,7 @@
 
 proc AddPoint {name} {
 
-#  if {$wms($pfn,n)=="finish"} { return  }
-  set pfn [string range $name 1 end]
+set pfn [string range $name 1 end]
 
 global wms mtbl${pfn} row lststr
 
@@ -31,7 +30,6 @@ global wms mtbl${pfn} row lststr
       set mtbl${pfn}($row($name),2) [format "%4.1f" [lindex $str 1]]
       set mtbl${pfn}($row($name),3) [format "%4.3f" [lindex $str 2]]
       incr row($name)
-#      incr wms($name,n)
     }
   }
 
@@ -63,10 +61,6 @@ global wms mtbl${pfn} row lststr
     set chb [checkbutton $mtable.chb$i -relief groove -variable wms($name,wet,[expr $i+1])]
 
     $mtable window config $i,4 -sticky news -window $chb
-
-#    set a [expr {$i+1}]
-#    set t${item}($i,1) $a
-#    set t${item}($i,2) [lindex $param(${item},${a}) 1]
   }
 
 
@@ -100,16 +94,13 @@ global wms mtbl${pfn} row lststr
   }
 
   bind $mtable <Button-3> "Bind $pfn %X %Y"
-#  bind $mtable <KP_Enter> [bind $mtable <Return>]
   bind $mtable <Return>  "Bind2 $pfn %W; break"
 }
 
 proc MKPopup {r c pfn} {
 global test row wms
 
-	set name S$pfn
-
-#  set test($pfn) "$r,$c"
+  set name S$pfn
 
   menu .top$pfn.pmenu -tearoff 0
   .top$pfn.pmenu add command -label "Add Row" -command "AddRow .top$pfn.canv.fr.mtabl $r $pfn"
@@ -130,8 +121,6 @@ global row test
 
   set r [$W index active row]
   set c [$W index active col]
-
-#  set test($pfn) "2 $r,$c $row($name)"
 
   if {$c==2} {
     $W activate [incr r],1

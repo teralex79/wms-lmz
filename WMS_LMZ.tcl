@@ -22,6 +22,10 @@ set wms(conf_path) "./conf/wms"
 set wms(log_path) "./log/wms"
 set wms(data_path) "./data"
 
+catch [file mkdir $wms(conf_path)]
+catch [file mkdir $wms(log_path)]
+catch [file mkdir $wms(data_path)]
+
 source ./WMS_CALC.tcl
 
 source $wms(src_path)/wms_cfg.tcl
@@ -156,9 +160,9 @@ pack .fr2 -side bottom -anchor w
   label $inf.inf -width 60 -textvariable wms(Info)
   pack $inf.infn $inf.inf -side left
 
-  if { [file exists "$wms(conf_path)/[info hostname].ini"] } {
+  if { [file exists "$wms(conf_path)/smart_place/$wms(hostname).smp"] } {
 
-    set of [open "$wms(conf_path)/[info hostname].ini" "r"]
+    set of [open "$wms(conf_path)/smart_place/$wms(hostname).smp" "r"]
     set data [read $of]
     close $of
 

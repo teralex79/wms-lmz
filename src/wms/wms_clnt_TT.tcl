@@ -111,7 +111,7 @@ global wms
 
 proc MeasTemp {name n rep aver} {
 global wms
-#puts "Meas Temp $name $n $rep $aver"
+
   SendSocketTT Meas $name $n $rep $aver
 }
 

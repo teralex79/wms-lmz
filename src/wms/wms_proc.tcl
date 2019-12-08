@@ -404,9 +404,9 @@ global wms rs meas
 
       label $path.lbdtpth -width 30 -text "Папка данных" -anchor w
       grid $path.lbdtpth -row 2 -column 0 -columnspan 2 -sticky nw
-      entry $path.endtpth -width 30 -textvar wms(DATAPATH) -justify left
+      entry $path.endtpth -width 30 -textvar wms(data_path) -justify left
       grid $path.endtpth -row 3 -column 0 -sticky nw
-      button $path.btdtpth -width 10 -text "Обзор" -command "ChooseDir $wms(DATAPATH) DATAPATH"
+      button $path.btdtpth -width 10 -text "Обзор" -command "ChooseDir $wms(data_path) data_path"
       grid $path.btdtpth -row 3 -column 1 -sticky nw
 
 		incr row1
@@ -792,7 +792,7 @@ global wms testmn
 ## Поиск всех тестовых замеров на текущий день и установка следующего имени замера
 
   set part "[clock format [clock seconds] -format "%y%m%d"]0"
-  set g [glob -nocomplain -directory "$wms(DATAPATH)/$wms(dae)" -type d "${part}*"]
+  set g [glob -nocomplain -directory "$wms(data_path)/$wms(dae)" -type d "${part}*"]
   set old 0
 
   if {[llength $g]} {
@@ -832,7 +832,7 @@ global wms
 proc SaveChartPos {name} {
 global wms
 
-  set f [open "./Data/Config/[info hostname]_${name}_chrt.cfg" "w"]
+  set f [open $wms(conf_path)/smart_place/$wms(hostname)_${name}_chrt.smp "w"]
   set w .graph${name}
   set g [wm geometry $w]
   puts $f "$w $g"
@@ -858,7 +858,7 @@ global wms
 proc ReadChartPos {name} {
 global wms
 
-  if {![catch {set of [open "./Data/Config/[info hostname]_${name}_chrt.cfg" "r"]}]} {
+  if {![catch {set of [open $wms(conf_path)/smart_place/$wms(hostname)_${name}_chrt.smp "r"]}]} {
 
     set data [read $of]
     close $of
@@ -1113,7 +1113,7 @@ global rs wms
   foreach name $wms(zond) {
     catch {SaveChartPos $name}
   }
-  set f [open "Data/Config/[info hostname].ini" "w"]
+  set f [open $wms(conf_path)/smart_place/$wms(hostname).smp "w"]
   set w .
   set g [wm geometry $w]
   puts $f "$w $g"

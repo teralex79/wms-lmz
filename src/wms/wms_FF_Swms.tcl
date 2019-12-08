@@ -6,9 +6,9 @@ global wms
   set ctime [clock seconds]
   set date [clock format [clock seconds] -format "%y_%m_%d"]
 
-  catch [file mkdir $wms(DATAPATH)/$wms(dae)/$wms(mn)/${name}]
+  catch [file mkdir $wms(data_path)/$wms(dae)/$wms(mn)/${name}]
 
-  set log [open $wms(DATAPATH)/$wms(dae)/$wms(mn)/${name}/${name}_swms.txt "w"]
+  set log [open $wms(data_path)/$wms(dae)/$wms(mn)/${name}/${name}_swms.txt "w"]
 
   puts -nonewline $log "Дата: ${date}; "
   puts -nonewline $log "Имя_режима: $wms(dae); "
@@ -107,7 +107,7 @@ global wms a
   set ctime [clock seconds]
   set time [clock format $ctime -format "%H:%M:%S"]
 
-  set log [open $wms(DATAPATH)/$wms(dae)/$wms(mn)/${name}/${name}_swms.txt "a"]
+  set log [open $wms(data_path)/$wms(dae)/$wms(mn)/${name}/${name}_swms.txt "a"]
 
   foreach join {1 0 2} type {Iсв1 Iразв Iсв2} {
     if {!$join || ($join==1 && $wms($name,Io1)) || ($join==2 && $wms($name,Io2))} {

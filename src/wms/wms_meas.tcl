@@ -289,7 +289,7 @@ global wms
         }
 
         MeasCoefSWMS $name
-        SaveCoef $name
+        SaveCoef $name 0
 
         set wms($name,state,next) "Свести"
 
@@ -365,8 +365,8 @@ global wms meas
   foreach name $wms(zond) {
     if {$wms(calculate)} {
       set wms(Info) "Calculating"
-      FormOldWMS   $name "$wms(DATAPATH)/$wms(dae)/$wms(mn)/${name}"
-      ReadRAW_Disp $name "$wms(DATAPATH)/$wms(dae)/$wms(mn)/${name}"
+      FormOldWMS   $name "$wms(data_path)/$wms(dae)/$wms(mn)/${name}"
+      ReadRAW_Disp $name "$wms(data_path)/$wms(dae)/$wms(mn)/${name}"
       FormInfo
     }
   }
