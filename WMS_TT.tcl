@@ -256,4 +256,4 @@ global config tt
   exit
 }
 
-#after 100 runScan
+after 100 runScan
