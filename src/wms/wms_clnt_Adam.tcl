@@ -56,7 +56,7 @@ global wms ent
 proc ZondContrAdam {i name} {
 global ent rs wms
   if {$wms(zndjntctr)} {
-    if {!$i || [expr {($i==1 && $wms($name,Io1)&& (($wms($name,new_meth) && $wms($name,tr,current)<2 ) || !$wms($name,new_meth))) || ($i==2 && $wms($name,Io2)&& (($wms($name,new_meth) && $wms($name,tr,current)<2 ) || !$wms($name,new_meth)))}]} {
+    if {!$i || [expr {($i==1 && $wms($name,Io1)&& (($wms($name,new_meth) && $wms($name,tr,current)<$wms($name,coord_in_tube) ) || !$wms($name,new_meth))) || ($i==2 && $wms($name,Io2)&& (($wms($name,new_meth) && $wms($name,tr,current)<$wms($name,coord_in_tube) ) || !$wms($name,new_meth)))}]} {
 
       set wms($name,nomove,tr) 0
       set adr [format "%02X" $wms($name,adr,adam)]

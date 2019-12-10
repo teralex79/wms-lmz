@@ -95,7 +95,7 @@ proc MoveZond {name} {
 global wms
 
   set wms($name,I,Spectrum) ""
-  if {$wms($name,Io1) || $wms($name,Io2) || $wms($name,tr,next)<10} {
+  if {$wms($name,Io1) || $wms($name,Io2) || $wms($name,tr,next)<$wms($name,coord_in_tube)} {
     set wms($name,Io1,Spectrum) ""
     set wms($name,Io2,Spectrum) ""
   }
@@ -136,7 +136,7 @@ global wms
 
     if {$wms($name,wet,$n) && !$wms($name,nowet)} {
       if {$join!=0} {
-        if {($join==1 && $wms($name,Io1) && (($wms($name,new_meth) && $wms($name,tr,current)<2 ) || !$wms($name,new_meth))) || ($join==2 && $wms($name,Io2) && (($wms($name,new_meth) && $wms($name,tr,current)<2 ) || !$wms($name,new_meth)))} {
+        if {($join==1 && $wms($name,Io1) && (($wms($name,new_meth) && $wms($name,tr,current)<$wms($name,coord_in_tube)) || !$wms($name,new_meth))) || ($join==2 && $wms($name,Io2) && (($wms($name,new_meth) && $wms($name,tr,current)<$wms($name,coord_in_tube)) || !$wms($name,new_meth)))} {
 
           set wms($name,state,next) "Свести"
         }
@@ -258,7 +258,7 @@ global wms meas
 proc MeasWet {name join n} {
 global wms
 
-  if {!$join || ($join==1 && $wms($name,Io1)&& (($wms($name,new_meth) && $wms($name,tr,current)<2 ) || !$wms($name,new_meth))) || ($join==2 && $wms($name,Io2)&& (($wms($name,new_meth) && $wms($name,tr,current)<2 ) || !$wms($name,new_meth)))} {
+  if {!$join || ($join==1 && $wms($name,Io1) && (($wms($name,new_meth) && $wms($name,tr,current)<$wms($name,coord_in_tube)) || !$wms($name,new_meth))) || ($join==2 && $wms($name,Io2) && (($wms($name,new_meth) && $wms($name,tr,current)<$wms($name,coord_in_tube)) || !$wms($name,new_meth)))} {
     Meas_SWMS $name $join $n
   } else {
     incr wms($name,cont)
