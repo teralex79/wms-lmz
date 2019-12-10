@@ -10,3 +10,7 @@ data/
 *.log
 *.cfg
 *.smp
+*.xls
+*.xlsx
+*.doc
+*.docx
