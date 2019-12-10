@@ -344,7 +344,7 @@ global wms
     button $bt.save -text "OK" -width 10 -command "SaveCoef $name 1; destroy .edcoef"
     grid $bt.save -row 0 -column $clm -padx 1 -pady 2
     incr clm
-    button $bt.save2 -text "Применить" -width 10 -command "SaveCoef $name; destroy .edcoef; EditCoefSWMS $name"
+    button $bt.save2 -text "Применить" -width 10 -command "SaveCoef $name 1; destroy .edcoef; EditCoefSWMS $name"
     grid $bt.save2 -row 0 -column $clm -padx 1 -pady 2
     incr clm
     button $bt.cnsl -text "Отмена" -width 10 -command "ReadCoef $name; destroy .edcoef"
