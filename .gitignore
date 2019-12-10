@@ -5,7 +5,7 @@ data/
 *.dat
 *.ini
 *.bak
-*.ppr
+wms-lmz.ppr
 *.lnk
 *.log
 *.cfg
