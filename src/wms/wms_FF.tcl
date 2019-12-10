@@ -235,7 +235,12 @@ global wms mtbl${pfn} row cb
 
   set name S$pfn
 
-  file copy -force $wms(conf_path)/S$pfn/RWV_${pfn}.dat $wms(conf_path)/S$pfn/RWV_${pfn}.bak
+  catch [file mkdir $wms(conf_path)/S$pfn]
+
+  if { [file exists $wms(conf_path)/S$pfn/RWV_${pfn}.dat]} {
+
+    file copy -force $wms(conf_path)/S$pfn/RWV_${pfn}.dat $wms(conf_path)/S$pfn/RWV_${pfn}.bak
+  }
 
   set of [open $wms(conf_path)/S$pfn/RWV_${pfn}.dat "w"]
 
