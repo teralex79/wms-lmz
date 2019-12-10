@@ -310,3 +310,43 @@ wms(S01,2w,blu)                  420000 | wms(S02,2w,blu)                  42000
 wms(S01,2w,red)                  660000 | wms(S02,2w,red)                  660000 |
 _______________________________________ | _______________________________________ |
 
+19_12_10 15:47:53
+
+wms(lamda,old,red) 660000
+wms(lamda,old,blu) 420000
+wms(repeat) 1
+wms(tolerance) 2
+wms(sensetivity) 7
+wms(calibr) 7
+wms(avermeas) 10
+wms(COMPATH) ./
+wms(data_path) ./data
+wms(zndjntctr) 1
+wms(temp) 0
+wms(sm) 0
+_______________________________________ _ _______________________________________ _
+                                    S01 |                                     S02 |
+_______________________________________ | _______________________________________ |
+wms(S01,adr,moxa)         192.168.0.123 | wms(S02,adr,moxa)         192.168.0.123 |
+wms(S01,port,swms)                 4003 | wms(S02,port,swms)                 4003 |
+wms(S01,port,adam)                 4004 | wms(S02,port,adam)                 4004 |
+wms(S01,adr,adam)                     1 | wms(S02,adr,adam)                     1 |
+wms(S01,L)                           25 | wms(S02,L)                           35 |
+wms(S01,RWI)                        589 | wms(S02,RWI)                      739.4 |
+wms(S01,RTI)                        568 | wms(S02,RTI)                        705 |
+wms(S01,RC)                         364 | wms(S02,RC)                         455 |
+wms(S01,RH)                         271 | wms(S02,RH)                         273 |
+wms(S01,ALFAI)                       -5 | wms(S02,ALFAI)                      -39 |
+wms(S01,TEMPA)                   0.0588 | wms(S02,TEMPA)                 0.059924 |
+wms(S01,TEMPB)                    5e-06 | wms(S02,TEMPB)                 3.51e-05 |
+wms(S01,TEMPC)                   0.0445 | wms(S02,TEMPC)                   0.0004 |
+wms(S01,coord_in_tube)                2 | wms(S02,coord_in_tube)                2 |
+wms(S01,meth)                        M3 | wms(S02,meth)                        M3 |
+wms(S01,new_meth)                     1 | wms(S02,new_meth)                     1 |
+wms(S01,Io1)                          1 | wms(S02,Io1)                          1 |
+wms(S01,Io2)                          0 | wms(S02,Io2)                          0 |
+wms(S01,type)                      swms | wms(S02,type)                      swms |
+wms(S01,2w,blu)                  420000 | wms(S02,2w,blu)                  420000 |
+wms(S01,2w,red)                  660000 | wms(S02,2w,red)                  660000 |
+_______________________________________ | _______________________________________ |
+
