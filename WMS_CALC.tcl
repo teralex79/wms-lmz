@@ -453,6 +453,8 @@ global calc wms
       set off [open $calc(conf_path)/[info hostname]_unimod.ini w]
       puts $off "calc(initialdir) $calc(initialdir)"
       foreach name {S01 S02 S04 S05 S07} {
+        if {$wms($name,l,uv) > $wms($name,2w,blu)} {set wms($name,l,uv) $wms($name,2w,blu)}
+        if {$wms($name,l,ir) < $wms($name,2w,red)} {set wms($name,l,ir) $wms($name,2w,red)}
         puts $off "wms($name,l,uv)    $wms($name,l,uv)   "
         puts $off "wms($name,l,ir)    $wms($name,l,ir)   "
         puts $off "wms($name,npoints) $wms($name,npoints)"
