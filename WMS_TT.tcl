@@ -24,24 +24,24 @@ wm protocol . WM_DELETE_WINDOW exitProg
 wm geometry . "=300x400+200+100"
 
 # Global defaults
-if { [file exists $tt(conf_path)/tt_[info hostname].def] } {
-  set fd [open $tt(conf_path)/tt_[info hostname].def r]
-  set lt [gets $fd]
-  close $fd
-  set config(dev) [lindex $lt 0]
-  set config(rate) [lindex $lt 1]
-  set config(canals) [lindex $lt 2]
-  set config(idir) [lindex $lt 3]
-  set config(debug) [lindex $lt 4]
-  set config(edit) [lindex $lt 5]
-} else {
-  set config(dev) "COM1"
-  set config(rate) 19200
-  set config(canals) $tt(conf_path)/tt_canals.def
-  set config(idir) $tt(conf_path)/temp
-  set config(debug) 1
-  set config(edit) 0
-}
+#if { [file exists $tt(conf_path)/tt_[info hostname].def] } {
+#  set fd [open $tt(conf_path)/tt_[info hostname].def r]
+#  set lt [gets $fd]
+#  close $fd
+#  set config(dev) [lindex $lt 0]
+#  set config(rate) [lindex $lt 1]
+#  set config(canals) [lindex $lt 2]
+#  set config(idir) [lindex $lt 3]
+#  set config(debug) [lindex $lt 4]
+#  set config(edit) [lindex $lt 5]
+#} else {
+#  set config(dev) "COM1"
+#  set config(rate) 19200
+#  set config(canals) $tt(conf_path)/tt_canals.def
+#  set config(idir) $tt(conf_path)/temp
+#  set config(debug) 1
+#  set config(edit) 0
+#}
 
 #
 # Smart placement
@@ -110,7 +110,6 @@ proc runScan {} {
 global config par
 # Подготовка задания
   set ltask [makeTask]
-#puts "lt=$ltask"
 
 # Открыли порт
   if {[catch {set fh [socket 192.168.0.124 4002]}]} {
@@ -118,22 +117,17 @@ global config par
      set answ [tk_messageBox -message "Нет связи с MOXA. Проверьте подключение устройства." -title "Error" -type ok -icon error]
   } else {
     fconfigure $fh -translation binary -eofchar {}
-    # -blocking 0
-#puts "run TT2"
-update
-# -timeout 5000
+
     set config(port) $fh
 
 # Загрузка задания
     set cod [loadTask $ltask]
-#puts "cod=$cod"
-update
+
     set config(status) "Loaded"
 
 # Запуск измерений
     set codr [runDev]
-#puts "RUN cod=$codr. Working..."
-update
+
     set config(status) "Run"
 
     .fbut.bt01 configure -state normal
@@ -175,12 +169,10 @@ global flck vlck  tbl
     }
   }
 
-#puts "$tt(opensock) tt(opensock)"
   if {$tt(opensock)} {
     foreach sock $tt(socket) {
       for {set indx 0} {$indx<[llength $config(pars_name)]} {incr indx} {
         set name [lindex $config(pars_name) $indx]
-#puts "$tt($sock,$name,meas) tt($sock,$name,meas)"
         if {$tt($sock,$name,meas)} {
 
           set val [format "%6.2f" $value($indx)]
@@ -206,7 +198,6 @@ global flck vlck  tbl
   } elseif { $config(status)=="Stop"} {
 # Останов измерений
     set cods [stopDev]
-#    puts "STOP cod=$cods"
 
     close $config(port)
     set config(status) "Idle"
@@ -238,7 +229,6 @@ proc formatVal {val p} {
 
     return [format $fmt $val]
   } else {
-#    puts "val($p)=$val"
     return 0
   }
 }
