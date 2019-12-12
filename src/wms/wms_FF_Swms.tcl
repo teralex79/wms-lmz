@@ -63,7 +63,7 @@ global wms
   puts -nonewline $log "hh:mm:ss"
   puts -nonewline $log "[format "%4s" N]"
   puts -nonewline $log "[format "%2s" n]"
-  puts -nonewline $log "[format "%7s" X]"
+  puts -nonewline $log "[format "%9s" X]"
   puts -nonewline $log "[format "%7s" Y]"
   if {$name!="A1" && $name!="A2"} {
     puts -nonewline $log "[format "%8s" RadP(W)]"
@@ -118,7 +118,7 @@ global wms a
 
         puts -nonewline $log " [format "%03d" $n]"
         puts -nonewline $log "[format "%2d"   $i]"
-        puts -nonewline $log "[format "%7.2f" $x]"
+        puts -nonewline $log "[format "%9.2f" $x]"
         puts -nonewline $log "[format "%7.2f" $y]"
         if {$name!="A1" && $name!="A2"} {
           puts -nonewline $log "[format "%8.4f"  $wms($name,RadPw)]"
