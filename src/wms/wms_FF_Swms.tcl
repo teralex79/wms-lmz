@@ -66,8 +66,8 @@ global wms
   puts -nonewline $log "[format "%9s" X]"
   puts -nonewline $log "[format "%7s" Y]"
   if {$name!="A1" && $name!="A2"} {
-    puts -nonewline $log "[format "%8s" RadP(W)]"
-    puts -nonewline $log "[format "%8s" RadP(T)]"
+    puts -nonewline $log "[format "%10s" RadP(W)]"
+    puts -nonewline $log "[format "%10s" RadP(T)]"
   }
   puts -nonewline $log "[format "%7s" Dens]"
   puts -nonewline $log "[format "%5s" Join]"
@@ -121,8 +121,8 @@ global wms a
         puts -nonewline $log "[format "%9.2f" $x]"
         puts -nonewline $log "[format "%7.2f" $y]"
         if {$name!="A1" && $name!="A2"} {
-          puts -nonewline $log "[format "%8.4f"  $wms($name,RadPw)]"
-          puts -nonewline $log "[format "%8.4f"  $wms($name,RadPt)]"
+          puts -nonewline $log "[format "%10.4f"  $wms($name,RadPw)]"
+          puts -nonewline $log "[format "%10.4f"  $wms($name,RadPt)]"
         }
         puts -nonewline $log "[format "%7.3f" $dens]"
         puts -nonewline $log "[format "%5d"   $join]"
