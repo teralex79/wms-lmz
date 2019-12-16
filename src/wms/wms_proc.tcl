@@ -391,10 +391,10 @@ global wms rs meas
       entry $param.enclbr -width 5 -textvar wms(calibr) -justify right
       grid $param.enclbr -row 3 -column 1 -sticky nw
 
-      label $param.lbaver -width 10 -text "Оср_NWMS" -anchor nw
-      grid $param.lbaver -row 4 -column 0 -sticky nw
-      entry $param.enaver -width 5 -textvar wms(avermeas) -justify right
-      grid $param.enaver -row 4 -column 1 -sticky nw
+#      label $param.lbaver -width 10 -text "Оср_NWMS" -anchor nw
+#      grid $param.lbaver -row 4 -column 0 -sticky nw
+#      entry $param.enaver -width 5 -textvar wms(avermeas) -justify right
+#      grid $param.enaver -row 4 -column 1 -sticky nw
 
 		incr row1
 		set col1 0
@@ -411,11 +411,11 @@ global wms rs meas
 
 		incr row1
 
-    set comment [labelframe $comn.cmnt -text "Комментарий"]
-    grid $comment  -row $row1 -column $col1 -sticky nw -columnspan 3 -padx 2 -pady 2
+#    set comment [labelframe $comn.cmnt -text "Комментарий"]
+#    grid $comment  -row $row1 -column $col1 -sticky nw -columnspan 3 -padx 2 -pady 2
 
-      entry $comment.txt -width 30 -textvariable wms(comment)
-      grid  $comment.txt -row 0 -column 0 -sticky nw
+#      entry $comment.txt -width 30 -textvariable wms(comment)
+#      grid  $comment.txt -row 0 -column 0 -sticky nw
 
 ### "Параметры"
 
