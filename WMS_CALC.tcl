@@ -9,7 +9,7 @@ catch [file mkdir $calc(conf_path)]
 if {$argc>0 || ([info exists ::argv0] && $::argv0 eq [info script])} {
   set wms(top) 1
   set wms(unimod) 1
-  console show
+#  console show
 } else {
   set wms(top) 0
   set wms(dd) 0

@@ -1,4 +1,4 @@
-set wms(console) 1
+set wms(console) 0
 if {$wms(console)} {
   console show
 }
