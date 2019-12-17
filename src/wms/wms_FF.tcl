@@ -129,7 +129,7 @@ global wms meas
     puts $of "wms($name,l,ir) $wms($name,l,ir)"
     puts $of "wms($name,npoints) $wms($name,npoints)"
 
-    foreach item {L RWI RTI RC RH ALFAI TEMPA TEMPB TEMPC Y_cntr Io1 Io2} {
+    foreach item {Xo HB L RWI RTI RC RH ALFAI TEMPA TEMPB TEMPC Y_cntr Io1 Io2} {
       if {![info exists wms($name,$item)]} {set wms($name,$item) 0}
       puts $of "wms($name,$item) $wms($name,$item)"
     }

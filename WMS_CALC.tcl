@@ -36,6 +36,18 @@ if {$wms(top)} {
     set wms($name,2w,red) 660000
   }
 
+  set wms(S01,Xo) 0
+  set wms(S02,Xo) 0
+  set wms(S04,Xo) 0
+  set wms(S05,Xo) 0
+  set wms(S07,Xo) 0
+
+  set wms(S01,HB) 700
+  set wms(S02,HB) 700
+  set wms(S04,HB) 700
+  set wms(S05,HB) 700
+  set wms(S07,HB) 700
+
   set wms(S01,RWI) 589
   set wms(S02,RWI) 589
   set wms(S04,RWI) 739.4
@@ -905,7 +917,7 @@ global c33 c41 a33 a41
 
   puts -nonewline $of3 "hh:mm:ss"
   puts -nonewline $of3 "[format "%5s" N]"
-  puts -nonewline $of3 "[format "%7s" X]"
+  puts -nonewline $of3 "[format "%9s" X]"
   puts -nonewline $of3 "[format "%7s" ALFA]"
 
   foreach k $calc($name,lamda,cutnmb) {
@@ -927,7 +939,7 @@ global c33 c41 a33 a41
   puts -nonewline $of4 "Тип Модуля: $wms($name,type) "
   puts $of4 ""
 
-  puts -nonewline $of4 "[format "%7s" X]"
+  puts -nonewline $of4 "[format "%9s" X]"
 
   foreach k $calc($name,lamda,cutnmb) {
     set lamda [lindex $calc($name,lamda,cut) $k]
@@ -974,11 +986,13 @@ global c33 c41 a33 a41
 
   puts -nonewline $of "hh:mm:ss"
   puts -nonewline $of "[format "%5s" N]"
-  puts -nonewline $of "[format "%7s" X]"
+  puts -nonewline $of "[format "%9s" X]"
   puts -nonewline $of "[format "%7s" ALFA]"
   if {$name!="A1" && $name!="A2"} {
-    puts -nonewline $of "[format "%8s" RadP(W)]"
-    puts -nonewline $of "[format "%8s" RadP(T)]"
+    puts -nonewline $of "[format "%10s" RadP(W)]"
+    puts -nonewline $of "[format "%10s" RadP(T)]"
+    puts -nonewline $of "[format "%10s" l(W)]"
+    puts -nonewline $of "[format "%10s" l(T)]"
   }
   puts -nonewline $of "[format "%7s" T,C]"
   puts -nonewline $of "[format "%14s" C(2)_[string range $calc($name,mn) end-1 end]]"
@@ -999,10 +1013,12 @@ global c33 c41 a33 a41
 
   puts -nonewline $of5 "hh:mm:ss"
   puts -nonewline $of5 "[format "%5s" N]"
-  puts -nonewline $of5 "[format "%7s" X]"
+  puts -nonewline $of5 "[format "%9s" X]"
   if {$name!="A1" && $name!="A2"} {
-    puts -nonewline $of5 "[format "%8s" RadP(W)]"
-    puts -nonewline $of5 "[format "%8s" RadP(T)]"
+    puts -nonewline $of5 "[format "%10s" RadP(W)]"
+    puts -nonewline $of5 "[format "%10s" RadP(T)]"
+    puts -nonewline $of5 "[format "%10s" l(W)]"
+    puts -nonewline $of5 "[format "%10s" l(T)]"
   }
   puts -nonewline $of5 "[format "%7s" T,C]"
   puts -nonewline $of5 "[format "%14s" Cint]"
@@ -1022,11 +1038,13 @@ global c33 c41 a33 a41
 
   puts -nonewline $of2 "hh:mm:ss"
   puts -nonewline $of2 "[format "%5s" N]"
-  puts -nonewline $of2 "[format "%7s" X]"
+  puts -nonewline $of2 "[format "%9s" X]"
   puts -nonewline $of2 "[format "%7s" ALFA]"
   if {$name!="A1" && $name!="A2"} {
-    puts -nonewline $of2 "[format "%8s" RadP(W)]"
-    puts -nonewline $of2 "[format "%8s" RadP(T)]"
+    puts -nonewline $of2 "[format "%10s" RadP(W)]"
+    puts -nonewline $of2 "[format "%10s" RadP(T)]"
+    puts -nonewline $of2 "[format "%10s" l(W)]"
+    puts -nonewline $of2 "[format "%10s" l(T)]"
   }
   puts -nonewline $of2 "[format "%14s" rsr_[string range $calc($name,mn) end-1 end]]"
   puts -nonewline $of2 "[format "%14s" r43_int_[string range $calc($name,mn) end-1 end]]"
@@ -1067,6 +1085,13 @@ global c33 c41 a33 a41
       }
       set calc($name,RadPw,$pnt) [expr {($calc($name,RWI) - $calc($name,X,$pnt) - $calc($name,RH))/($calc($name,RC) - $calc($name,RH))}]
       set calc($name,RadPt,$pnt) [expr {($calc($name,RTI) - $calc($name,X,$pnt) - $calc($name,RH))/($calc($name,RC) - $calc($name,RH))}]
+      if {![info exists calc($name,Xo)]} {
+
+        set calc($name,Xo) $wms($name,Xo)
+        set calc($name,HB) $wms($name,HB)
+      }
+      set calc($name,lw,$pnt) [expr {($calc($name,X,$pnt) - $calc($name,Xo) + 10. + $calc($name,L)/2.)/(1.*$calc($name,HB))}]
+      set calc($name,lt,$pnt) [expr {($calc($name,X,$pnt) - $calc($name,Xo))/(1.*$calc($name,HB))}]
     }
 
     set calc($name,am2,$pnt) 0
@@ -1372,11 +1397,13 @@ global c33 c41 a33 a41
 
       puts -nonewline $of "$calc($name,time,$pnt)"
       puts -nonewline $of " [format "%04d"   $N]"
-      puts -nonewline $of "[format "%7.2f"  $calc($name,X,$pnt)]"
+      puts -nonewline $of "[format "%9.2f"  $calc($name,X,$pnt)]"
       puts -nonewline $of "[format "%7.2f"  $calc($name,Y,$pnt)]"
       if {$name!="A1" && $name!="A2"} {
-        puts -nonewline $of "[format "%8.4f"  $calc($name,RadPw,$pnt)]"
-        puts -nonewline $of "[format "%8.4f"  $calc($name,RadPt,$pnt)]"
+        puts -nonewline $of "[format "%10.4f"  $calc($name,RadPw,$pnt)]"
+        puts -nonewline $of "[format "%10.4f"  $calc($name,RadPt,$pnt)]"
+        puts -nonewline $of "[format "%10.4f"  $calc($name,lw,$pnt)]"
+        puts -nonewline $of "[format "%10.4f"  $calc($name,lt,$pnt)]"
       }
       puts -nonewline $of "[format "%7.2f"  $calc($name,T,$pnt)]"
       puts -nonewline $of "[format "%14.6E" $calc($name,am2,$pnt)]"
@@ -1387,10 +1414,12 @@ global c33 c41 a33 a41
 
       puts -nonewline $of5 "$calc($name,time,$pnt)"
       puts -nonewline $of5 " [format "%04d"   $N]"
-      puts -nonewline $of5 "[format "%7.2f"  $calc($name,X,$pnt)]"
+      puts -nonewline $of5 "[format "%9.2f"  $calc($name,X,$pnt)]"
       if {$name!="A1" && $name!="A2"} {
-        puts -nonewline $of5 "[format "%8.4f"  $calc($name,RadPw,$pnt)]"
-        puts -nonewline $of5 "[format "%8.4f"  $calc($name,RadPt,$pnt)]"
+        puts -nonewline $of5 "[format "%10.4f"  $calc($name,RadPw,$pnt)]"
+        puts -nonewline $of5 "[format "%10.4f"  $calc($name,RadPt,$pnt)]"
+        puts -nonewline $of5 "[format "%10.4f"  $calc($name,lw,$pnt)]"
+        puts -nonewline $of5 "[format "%10.4f"  $calc($name,lt,$pnt)]"
       }
       puts -nonewline $of5 "[format "%7.2f"  $calc($name,T,$pnt)]"
       puts -nonewline $of5 "[format "%14.6E" $calc($name,amn,$pnt)]"
@@ -1400,11 +1429,13 @@ global c33 c41 a33 a41
 
       puts -nonewline $of2 "$calc($name,time,$pnt)"
       puts -nonewline $of2 " [format "%04d"  $N]"
-      puts -nonewline $of2 "[format "%7.2f"  $calc($name,X,$pnt)]"
+      puts -nonewline $of2 "[format "%9.2f"  $calc($name,X,$pnt)]"
       puts -nonewline $of2 "[format "%7.2f"  $calc($name,Y,$pnt)]"
       if {$name!="A1" && $name!="A2"} {
-        puts -nonewline $of2 "[format "%8.4f"  $calc($name,RadPw,$pnt)]"
-        puts -nonewline $of2 "[format "%8.4f"  $calc($name,RadPt,$pnt)]"
+        puts -nonewline $of2 "[format "%10.4f"  $calc($name,RadPw,$pnt)]"
+        puts -nonewline $of2 "[format "%10.4f"  $calc($name,RadPt,$pnt)]"
+        puts -nonewline $of2 "[format "%10.4f"  $calc($name,lw,$pnt)]"
+        puts -nonewline $of2 "[format "%10.4f"  $calc($name,lt,$pnt)]"
       }
       puts -nonewline $of2 "[format "%14.6E" $calc($name,rsr,$pnt)]"
       puts -nonewline $of2 "[format "%14.6E" $calc($name,rz43,$pnt)]"
@@ -1419,7 +1450,7 @@ global c33 c41 a33 a41
 
       puts -nonewline $of3 "$calc($name,time,$pnt)"
       puts -nonewline $of3 " [format "%04d" $N]"
-      puts -nonewline $of3 "[format "%7.2f" $calc($name,X,$pnt)]"
+      puts -nonewline $of3 "[format "%9.2f" $calc($name,X,$pnt)]"
       puts -nonewline $of3 "[format "%7.2f" $calc($name,Y,$pnt)]"
       foreach k $calc($name,lamda,cutnmb) {
         puts -nonewline $of3 "[format "%15.6E" $calc($name,IIo,$k)]"
@@ -1428,7 +1459,7 @@ global c33 c41 a33 a41
         puts -nonewline $of3 "[format "%15.6E" $calc($name,Gps,$k)]"
       }
 
-      puts -nonewline $of4 "[format "%7.2f" $calc($name,X,$pnt)]"
+      puts -nonewline $of4 "[format "%9.2f" $calc($name,X,$pnt)]"
       foreach k $calc($name,lamda,cutnmb) {
         puts -nonewline $of4 "[format "%15.6E" $calc($name,IIo,$k)]"
       }
@@ -1470,10 +1501,12 @@ global c33 c41 a33 a41
 
       puts -nonewline $of5 "$calc($name,time,$pnt)"
       puts -nonewline $of5 " [format "%04d"   $N]"
-      puts -nonewline $of5 "[format "%7.2f"  $calc($name,X,$pnt)]"
+      puts -nonewline $of5 "[format "%9.2f"  $calc($name,X,$pnt)]"
       if {$name!="A1" && $name!="A2"} {
-        puts -nonewline $of5 "[format "%8.4f"  $calc($name,RadPw,$pnt)]"
-        puts -nonewline $of5 "[format "%8.4f"  $calc($name,RadPt,$pnt)]"
+        puts -nonewline $of5 "[format "%10.4f"  $calc($name,RadPw,$pnt)]"
+        puts -nonewline $of5 "[format "%10.4f"  $calc($name,RadPt,$pnt)]"
+        puts -nonewline $of5 "[format "%10.4f"  $calc($name,lw,$pnt)]"
+        puts -nonewline $of5 "[format "%10.4f"  $calc($name,lt,$pnt)]"
       }
       puts -nonewline $of5 "[format "%7.2f"  $calc($name,T,$pnt)]"
       puts -nonewline $of5 "[format "%14.6E" $calc($name,amn,$pnt)]"

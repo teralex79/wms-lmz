@@ -57,6 +57,12 @@ set wms(ready) 1
 set wms(S01,Dens) 0.4
 set wms(S02,Dens) 0.162
 
+set wms(S01,Xo) 0
+set wms(S02,Xo) 0
+
+set wms(S01,HB) 700
+set wms(S02,HB) 700
+
 set wms(S01,L) 25
 set wms(S02,L) 35
 

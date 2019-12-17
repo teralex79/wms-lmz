@@ -433,7 +433,7 @@ global wms rs meas
 
     set cnt1 1
 
-    foreach item {L RWI RTI RC RH ALFAI TEMPA TEMPB TEMPC "X in tube" "M1 with Join" "M2 w/o Join" "M3 New" Type} {
+    foreach item {Xo H_blade LBase RWI RTI RC RH ALFAI TEMPA TEMPB TEMPC "X in tube" "M1 with Join" "M2 w/o Join" "M3 New" Type} {
 
       label $zond.title${cnt1}0 -text "$item" -width 10 -anchor w
       grid $zond.title${cnt1}0 -row $cnt1 -column 0 -sticky nw
@@ -451,7 +451,7 @@ global wms rs meas
 
     set cnt1 1
 
-    foreach item {L RWI RTI RC RH ALFAI TEMPA TEMPB TEMPC coord_in_tube} {
+    foreach item {Xo HB L RWI RTI RC RH ALFAI TEMPA TEMPB TEMPC coord_in_tube} {
 
       set cnt2 1
       if {$item=="L"} {

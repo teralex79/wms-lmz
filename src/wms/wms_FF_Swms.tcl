@@ -20,7 +20,7 @@ global wms
   puts $log ""
   puts $log ""
 
-  foreach par {RWI RTI RC RH ALFAI} {
+  foreach par {RWI RTI RC RH ALFAI Xo HB} {
 
     puts -nonewline $log "$par=$wms($name,$par); "
   }
@@ -68,6 +68,8 @@ global wms
   if {$name!="A1" && $name!="A2"} {
     puts -nonewline $log "[format "%10s" RadP(W)]"
     puts -nonewline $log "[format "%10s" RadP(T)]"
+    puts -nonewline $log "[format "%10s" l(W)]"
+    puts -nonewline $log "[format "%10s" l(T)]"
   }
   puts -nonewline $log "[format "%7s" Dens]"
   puts -nonewline $log "[format "%5s" Join]"
@@ -102,6 +104,8 @@ global wms a
   if {$name!="A1" && $name!="A2"} {
     set wms($name,RadPw) [expr {($wms($name,RWI) - $x - $wms($name,RH))/($wms($name,RC) - $wms($name,RH))}]
     set wms($name,RadPt) [expr {($wms($name,RTI) - $x - $wms($name,RH))/($wms($name,RC) - $wms($name,RH))}]
+    set wms($name,lw) [expr {($x - $wms($name,Xo) + 10. + $wms($name,L)/2.)/(1.*$wms($name,HB))}]
+    set wms($name,lt) [expr {($x - $wms($name,Xo))/(1.*$wms($name,HB))}]
   }
 
   set ctime [clock seconds]
@@ -123,6 +127,8 @@ global wms a
         if {$name!="A1" && $name!="A2"} {
           puts -nonewline $log "[format "%10.4f"  $wms($name,RadPw)]"
           puts -nonewline $log "[format "%10.4f"  $wms($name,RadPt)]"
+          puts -nonewline $log "[format "%10.4f"  $wms($name,lw)]"
+          puts -nonewline $log "[format "%10.4f"  $wms($name,lt)]"
         }
         puts -nonewline $log "[format "%7.3f" $dens]"
         puts -nonewline $log "[format "%5d"   $join]"
